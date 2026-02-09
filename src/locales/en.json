@@ -1,0 +1,69 @@
+{
+  "common": {
+    "search": "Search",
+    "searchPlaceholder": "Search technology, keywords, or IP types...",
+    "learnMore": "Learn more",
+    "postDemand": "Post Demand",
+    "login": "Login",
+    "getStarted": "Get Started",
+    "loading": "Loading...",
+    "noResults": "No results found.",
+    "all": "All",
+    "notifications": "Notifications",
+    "markAllRead": "Mark all read",
+    "noNotifications": "No notifications"
+  },
+  "nav": {
+    "marketplace": "Marketplace",
+    "demand": "Demand",
+    "rooms": "Deals",
+    "experts": "Experts",
+    "documents": "Documents",
+    "mandates": "Mandates"
+  },
+  "hero": {
+    "title": "Global Marketplace for <0>Intellectual Property</0>",
+    "subtitle": "Explore premium intellectual property from verified owners worldwide.",
+    "ctaPrimary": "Explore IP",
+    "ctaSecondary": "Post a Demand"
+  },
+  "categories": {
+    "title": "Explore by Category",
+    "patent": "Patent",
+    "patentDesc": "Innovative technical inventions",
+    "trademark": "Trademark",
+    "trademarkDesc": "Global brands and trademarks",
+    "software": "Software",
+    "softwareDesc": "Code, algorithms, and copyrights",
+    "design": "Design",
+    "designDesc": "Industrial designs and models"
+  },
+  "featured": {
+    "trending": "Trending IP Assets",
+    "demands": "Active Buyer Demands",
+    "new": "NEW",
+    "negotiable": "Negotiable"
+  },
+  "marketplace": {
+    "title": "Global IP <0>Hub</0>",
+    "subtitle": "Explore premium intellectual property from verified owners worldwide.",
+    "allIndustries": "All Industries"
+  },
+  "demandCreate": {
+    "title": "Post a <0>Demand</0>",
+    "subtitle": "Tell the global IP market what you are looking for.",
+    "formTitle": "Demand Details",
+    "ipType": "IP Type",
+    "price": "Budget/Price",
+    "submit": "Post Demand",
+    "submitting": "Posting..."
+  },
+  "footer": {
+    "description": "The trusted marketplace for global intellectual property transactions.",
+    "product": "Product",
+    "company": "Company",
+    "legal": "Legal",
+    "privacy": "Privacy",
+    "terms": "Terms"
+  }
+}

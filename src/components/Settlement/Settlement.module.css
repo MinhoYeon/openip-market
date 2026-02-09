@@ -1,0 +1,307 @@
+.settContainer {
+  padding-top: 120px;
+  padding-bottom: 100px;
+}
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.pageTitle {
+  font-size: 36px;
+  font-weight: 700;
+}
+
+/* Stats Row */
+.statsRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.statCard {
+  padding: 24px;
+  border-radius: 16px;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  text-align: center;
+}
+
+.statValue {
+  font-size: 28px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.statLabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 4px;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+  overflow-x: auto;
+}
+
+.tab {
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+
+.tab:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.tabActive {
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.tabBadge {
+  background: var(--accent);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 8px;
+  margin-left: 6px;
+}
+
+/* Settlement Table */
+.settTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+}
+
+.settTable th {
+  padding: 14px 18px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-align: left;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.settTable td {
+  padding: 16px 18px;
+  font-size: 14px;
+  border-bottom: 1px solid var(--glass-border);
+  vertical-align: middle;
+}
+
+.settTable tr:last-child td {
+  border-bottom: none;
+}
+
+.settTable tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Status Badges */
+.statusBadge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.stPending {
+  background: rgba(234, 179, 8, 0.15);
+  color: #eab308;
+}
+
+.stProcessing {
+  background: rgba(99, 102, 241, 0.15);
+  color: #818cf8;
+}
+
+.stCompleted {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.stFailed {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.stRefunded {
+  background: rgba(107, 114, 128, 0.15);
+  color: #6b7280;
+}
+
+/* Payment Type Badge */
+.paymentBadge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--foreground);
+}
+
+/* Amount */
+.amount {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--accent);
+}
+
+/* Actions */
+.actionBtn {
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--glass-border);
+  background: transparent;
+  color: var(--foreground);
+  transition: all 0.15s;
+}
+
+.actionBtn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.actionBtnPrimary {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  border: none;
+  color: white;
+}
+
+.actionBtnPrimary:hover {
+  box-shadow: 0 4px 12px var(--primary-glow);
+}
+
+.actionBtnSuccess {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: #10b981;
+}
+
+.actionBtnDanger {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+}
+
+/* Empty State */
+.emptyState {
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--muted);
+}
+
+.emptyIcon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.emptyTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: 6px;
+}
+
+.emptyDesc {
+  font-size: 14px;
+}
+
+/* Spinner */
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--glass-border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin: 100px auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Person cell */
+.personCell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.personAvatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.personName {
+  font-weight: 500;
+}
+
+/* Room Link */
+.roomLink {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.roomLink:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 900px) {
+  .statsRow {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .settTable {
+    display: block;
+    overflow-x: auto;
+  }
+}

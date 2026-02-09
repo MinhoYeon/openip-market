@@ -1,0 +1,381 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String            @id @default(uuid())
+  email           String            @unique
+  passwordHash    String?
+  name            String?
+  role            String            @default("Owner") // Owner, Buyer, Broker, Valuator, Admin
+  bankProfile     String?           // JSON: { bankName, accountHolder, accountNumber }
+  notifications   Notification[]
+  listings        IPListing[]
+  roomParticipations RoomParticipant[]
+  offersCreated      Offer[]
+  documentsUploaded Document[]
+  demandRequests     DemandRequest[] // Buyer requests
+  proposals          Proposal[]      // Proposals sent
+  licensesAsLicensor  License[]     @relation("LicensorLicenses")
+  licensesAsLicensee  License[]     @relation("LicenseeLicenses")
+  settlementsAsPayer  Settlement[]  @relation("PayerSettlements")
+  settlementsAsPayee  Settlement[]  @relation("PayeeSettlements")
+  expertProfile   ExpertProfile?
+  valuationRequests ValuationRequest[] @relation("RequesterValuations")
+  valuationAssignments ValuationRequest[] @relation("ExpertValuations")
+  valuationBids   ValuationBid[]
+  mandatesAsOwner    Mandate[]     @relation("MandateOwner")
+  mandatesAsBroker   Mandate[]     @relation("MandateBroker")
+  signatureRequests  SignatureRequest[]
+  messages        Message[]
+  auditLogs       AuditLog[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+}
+
+model IPListing {
+  id               String       @id @default(uuid())
+  title            String
+  summary          String?
+  ipType           String       // Patent, Trademark, Design, Software
+  industry         String?
+  ipc              String?
+  visibility       String       @default("Full") // Full, Teaser
+  status           String       @default("Published") // Draft, Published, Paused, UnderNegotiation, Sold, Licensed, Archived
+  priceExpectation String?
+  owner            User         @relation(fields: [ownerId], references: [id])
+  ownerId          String
+  rightHolders     RightHolder[]
+  rooms            Room[]
+  proposals        Proposal[]
+  licenses         License[]
+  valuationRequests ValuationRequest[]
+  mandates         Mandate[]
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+}
+
+model RightHolder {
+  id             String    @id @default(uuid())
+  name           String
+  sharePercent   Float
+  ipListing      IPListing @relation(fields: [ipListingId], references: [id])
+  ipListingId    String
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+// ─── Phase B: Room + Offer + Document ───
+
+model Room {
+  id            String            @id @default(uuid())
+  title         String
+  type          String            // Deal, License, Valuation
+  status        String            @default("Setup") // Setup, Negotiating, Signing, Settling, Completed, Terminated
+  ipListing     IPListing?        @relation(fields: [ipListingId], references: [id])
+  ipListingId   String?
+  participants  RoomParticipant[]
+  offers        Offer[]
+  documents     Document[]
+  licenses      License[]
+  settlements   Settlement[]
+  messages      Message[]
+  auditLogs     AuditLog[]
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+}
+
+model RoomParticipant {
+  id        String   @id @default(uuid())
+  room      Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  roomId    String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  role      String   // Seller, Buyer, BrokerSeller, BrokerBuyer, DualAgent
+  joinedAt  DateTime @default(now())
+
+  @@unique([roomId, userId])
+}
+
+model Offer {
+  id        String   @id @default(uuid())
+  room      Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  roomId    String
+  createdBy User     @relation(fields: [creatorId], references: [id])
+  creatorId String
+  version   Int      @default(1)
+  price     String?
+  terms     String?  // JSON-encoded conditions
+  message   String?
+  status    String   @default("Draft") // Draft, Sent, Countered, Accepted, Rejected, Withdrawn
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Document {
+  id              String   @id @default(uuid())
+  room            Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  roomId          String
+  uploadedBy      User     @relation(fields: [uploaderId], references: [id])
+  uploaderId      String
+  fileName        String
+  fileUrl         String   // path or URL to stored file
+  fileSize        Int?
+  documentType    String   // NDA, LOI, License, Assignment, Invoice, Report, Other
+  signatureStatus String   @default("Draft") // Draft, Shared, SignRequested, Signed, Rejected, Expired
+  version         Int      @default(1)
+  confidential    String   @default("Private") // Public, Private, Strict
+  accessScope     String?  // JSON: which participant roles can access
+  versionNote     String?  // notes about this version
+  effectiveDate   DateTime? // when this document takes effect
+  expiryDate      DateTime? // when this document expires
+  signatureRequests SignatureRequest[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// ─── Phase C: Demand + Proposal ───
+
+model DemandRequest {
+  id             String     @id @default(uuid())
+  title          String
+  description    String?
+  ipTypeNeeded   String     // Patent, Trademark, Design, Software, Any
+  industry       String?
+  budgetRange    String?    // e.g. "100M-500M KRW"
+  urgency        String     @default("Normal") // Urgent, Normal, Flexible
+  status         String     @default("Open") // Open, InReview, Matched, Closed, Cancelled
+  visibility     String     @default("Public") // Public, Verified
+  requester      User       @relation(fields: [requesterId], references: [id])
+  requesterId    String
+  proposals      Proposal[]
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+}
+
+model Proposal {
+  id              String        @id @default(uuid())
+  demandRequest   DemandRequest @relation(fields: [demandRequestId], references: [id], onDelete: Cascade)
+  demandRequestId String
+  proposer        User          @relation(fields: [proposerId], references: [id])
+  proposerId      String
+  ipListing       IPListing?    @relation(fields: [ipListingId], references: [id])
+  ipListingId     String?
+  title           String
+  description     String?
+  proposedPrice   String?
+  status          String        @default("Submitted") // Submitted, UnderReview, Shortlisted, Accepted, Rejected, Withdrawn
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+// ─── Phase D: License + Settlement ───
+
+model License {
+  id              String       @id @default(uuid())
+  room            Room         @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  roomId          String
+  ipListing       IPListing    @relation(fields: [ipListingId], references: [id])
+  ipListingId     String
+  licensor        User         @relation("LicensorLicenses", fields: [licensorId], references: [id])
+  licensorId      String
+  licensee        User         @relation("LicenseeLicenses", fields: [licenseeId], references: [id])
+  licenseeId      String
+  licenseType     String       // Exclusive, NonExclusive, Sole, CrossLicense
+  territory       String?      // e.g. "Korea", "Global", "Asia-Pacific"
+  duration        String?      // e.g. "5 years", "Perpetual"
+  royaltyRate     String?      // e.g. "5%", "Lump Sum 300M KRW"
+  upfrontFee      String?
+  status          String       @default("Draft") // Draft, Active, Suspended, Expired, Terminated
+  effectiveDate   DateTime?
+  expirationDate  DateTime?
+  settlements     Settlement[]
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+}
+
+model Settlement {
+  id              String    @id @default(uuid())
+  room            Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  roomId          String
+  license         License?  @relation(fields: [licenseId], references: [id])
+  licenseId       String?
+  payer           User      @relation("PayerSettlements", fields: [payerId], references: [id])
+  payerId         String
+  payee           User      @relation("PayeeSettlements", fields: [payeeId], references: [id])
+  payeeId         String
+  amount          String    // e.g. "300,000,000 KRW" (Gross)
+  feeAmount       String?   // e.g. "10,500,000 KRW" (3.5%)
+  taxAmount       String?   // e.g. "33,000,000 KRW" (VAT)
+  netAmount       String?   // e.g. "256,500,000 KRW" (Net)
+  currency        String    @default("KRW")
+  paymentType     String    // Upfront, Royalty, Milestone, Escrow
+  status          String    @default("Pending") // Pending, Processing, Completed, Failed, Refunded
+  dueDate         DateTime?
+  paidAt          DateTime?
+  transactionRef  String?   // external payment reference
+  note            String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model FeePolicy {
+  id              String   @id @default(uuid())
+  name            String
+  feeType         String   // Platform, BrokerSeller, BrokerBuyer, Escrow
+  ratePercent     Float?   // e.g. 3.5 for 3.5%
+  fixedAmount     String?  // e.g. "500,000 KRW"
+  applicableTo    String   // Deal, License, Valuation, All
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// ─── Phase E: Expert Market ───
+
+model ExpertProfile {
+  id              String   @id @default(uuid())
+  user            User     @relation(fields: [userId], references: [id])
+  userId          String   @unique
+  expertType      String   // Valuator, PatentAttorney, Broker, Consultant
+  specializations String?  // JSON array: e.g. ["AI", "BioTech", "Software"]
+  bio             String?
+  experience      String?  // e.g. "15 years"
+  certifications  String?  // JSON array
+  hourlyRate      String?  // e.g. "500,000 KRW/hr"
+  projectRate     String?  // e.g. "5,000,000 KRW"
+  rating          Float    @default(0)
+  reviewCount     Int      @default(0)
+  completedJobs   Int      @default(0)
+  availability    String   @default("Available") // Available, Busy, Unavailable
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model ValuationRequest {
+  id              String     @id @default(uuid())
+  requester       User       @relation("RequesterValuations", fields: [requesterId], references: [id])
+  requesterId     String
+  expert          User?      @relation("ExpertValuations", fields: [expertId], references: [id])
+  expertId        String?
+  ipListing       IPListing  @relation(fields: [ipListingId], references: [id])
+  ipListingId     String
+  requestType     String     // DirectRequest, OpenBid, PlatformAssign
+  description     String?
+  budget          String?
+  urgency         String     @default("Normal") // Urgent, Normal, Flexible
+  status          String     @default("Open") // Open, Assigned, InProgress, Delivered, Accepted, Disputed
+  deliveryDate    DateTime?
+  result          String?    // JSON or text: valuation report summary
+  bids            ValuationBid[]
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+}
+
+model ValuationBid {
+  id                String           @id @default(uuid())
+  valuationRequest  ValuationRequest @relation(fields: [valuationRequestId], references: [id], onDelete: Cascade)
+  valuationRequestId String
+  expert            User             @relation(fields: [expertId], references: [id])
+  expertId          String
+  fee               String           // e.g. "2,000,000 KRW"
+  leadTime          String           // e.g. "10 days"
+  message           String?
+  status            String           @default("Submitted") // Submitted, Accepted, Rejected, Withdrawn
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+}
+
+// ─── Phase F: Mandate + Document Workflow ───
+
+model Mandate {
+  id              String     @id @default(uuid())
+  owner           User       @relation("MandateOwner", fields: [ownerId], references: [id])
+  ownerId         String
+  broker          User       @relation("MandateBroker", fields: [brokerId], references: [id])
+  brokerId        String
+  ipListing       IPListing? @relation(fields: [ipListingId], references: [id])
+  ipListingId     String?    // null = applies to all owner's IP
+  scope           String     // JSON: {"editIP":true,"negotiate":true,"signDocuments":false,"manageSettlement":false,...}
+  status          String     @default("Pending") // Pending, Active, Suspended, Terminated
+  message         String?    // optional message from owner
+  startDate       DateTime?
+  endDate         DateTime?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  @@unique([ownerId, brokerId, ipListingId])
+}
+
+model SignatureRequest {
+  id              String    @id @default(uuid())
+  document        Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  documentId      String
+  signer          User      @relation(fields: [signerId], references: [id])
+  signerId        String
+  status          String    @default("Pending") // Pending, Signed, Rejected, Expired
+  signedAt        DateTime?
+  rejectedAt      DateTime?
+  rejectReason    String?
+  deadlineAt      DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@unique([documentId, signerId])
+}
+
+// ─── Phase H: Messages + Audit Log ───
+
+model Message {
+  id          String   @id @default(uuid())
+  room        Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  roomId      String
+  sender      User     @relation(fields: [senderId], references: [id])
+  senderId    String
+  content     String
+  messageType String   @default("text") // text, file, system
+  attachmentUrl String? // file URL if messageType=file
+  attachmentName String?
+  mentions    String?  // JSON array of mentioned user IDs
+  createdAt   DateTime @default(now())
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  room        Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  roomId      String
+  actor       User     @relation(fields: [actorId], references: [id])
+  actorId     String
+  action      String   // created, updated, statusChanged, offerSubmitted, documentUploaded, signed, rejected, terminated
+  targetType  String?  // Room, Offer, Document, Settlement, Message
+  targetId    String?
+  detail      String?  // JSON: additional context
+  ipAddress   String?
+  createdAt   DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  type      String   // OFFER, DOCUMENT, SETTLEMENT, SYSTEM
+  content   String
+  isRead    Boolean  @default(false)
+  link      String?  // /rooms/123
+  createdAt DateTime @default(now())
+}
+
+
+
+

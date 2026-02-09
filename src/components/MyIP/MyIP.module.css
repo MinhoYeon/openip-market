@@ -1,0 +1,241 @@
+.myIpContainer {
+  padding-top: 120px;
+  padding-bottom: 100px;
+}
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.pageTitle {
+  font-size: 36px;
+  font-weight: 700;
+}
+
+/* Status Tabs */
+.statusTabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--glass-border);
+  margin-bottom: 32px;
+  overflow-x: auto;
+}
+
+.statusTab {
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--muted);
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  background: transparent;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
+
+.statusTab:hover {
+  color: var(--foreground);
+}
+
+.statusTabActive {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.tabCount {
+  font-size: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-left: 6px;
+}
+
+/* IP Table */
+.ipTable {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.ipTable thead {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.ipTable th {
+  padding: 14px 20px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.ipTable td {
+  padding: 16px 20px;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  vertical-align: middle;
+}
+
+.ipTable tbody tr {
+  transition: background 0.15s ease;
+}
+
+.ipTable tbody tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.ipTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.titleCell {
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.titleLink {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.2s;
+}
+
+.titleLink:hover {
+  color: var(--accent);
+}
+
+/* Status Pill */
+.statusPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.statusPublished {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.statusDraft {
+  background: rgba(148, 163, 184, 0.15);
+  color: #94a3b8;
+}
+
+.statusPaused {
+  background: rgba(234, 179, 8, 0.15);
+  color: #eab308;
+}
+
+.statusSold {
+  background: rgba(99, 102, 241, 0.15);
+  color: #818cf8;
+}
+
+.statusArchived {
+  background: rgba(107, 114, 128, 0.15);
+  color: #6b7280;
+}
+
+/* Row Actions */
+.rowActions {
+  display: flex;
+  gap: 6px;
+}
+
+.actionBtn {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--glass-border);
+  background: transparent;
+  color: var(--foreground);
+  transition: all 0.15s ease;
+}
+
+.actionBtn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--muted);
+}
+
+.actionBtnDanger:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+/* Empty State */
+.emptyState {
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--muted);
+}
+
+.emptyIcon {
+  font-size: 56px;
+  margin-bottom: 16px;
+}
+
+.emptyTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: 8px;
+}
+
+.emptyDesc {
+  margin-bottom: 24px;
+  font-size: 15px;
+}
+
+/* Stats Row */
+.statsRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.statCard {
+  padding: 20px;
+  border-radius: 12px;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  text-align: center;
+}
+
+.statValue {
+  font-size: 28px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.statLabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 4px;
+}

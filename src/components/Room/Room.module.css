@@ -1,0 +1,761 @@
+.roomsContainer {
+  padding-top: 120px;
+  padding-bottom: 100px;
+}
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.pageTitle {
+  font-size: 36px;
+  font-weight: 700;
+}
+
+/* Type Tabs */
+.typeTabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--glass-border);
+  margin-bottom: 32px;
+  overflow-x: auto;
+}
+
+.typeTab {
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--muted);
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  background: transparent;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
+
+.typeTab:hover {
+  color: var(--foreground);
+}
+
+.typeTabActive {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.tabCount {
+  font-size: 11px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 2px 7px;
+  border-radius: 10px;
+  margin-left: 6px;
+}
+
+/* Room Cards */
+.roomGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 20px;
+}
+
+.roomCard {
+  padding: 24px;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.roomCard:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+
+.roomCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.roomType {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.typeDeal {
+  background: rgba(99, 102, 241, 0.15);
+  color: #818cf8;
+}
+
+.typeLicense {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.typeValuation {
+  background: rgba(234, 179, 8, 0.15);
+  color: #eab308;
+}
+
+.roomStatus {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.statusSetup {
+  background: rgba(148, 163, 184, 0.15);
+  color: #94a3b8;
+}
+
+.statusNegotiating {
+  background: rgba(99, 102, 241, 0.15);
+  color: #818cf8;
+}
+
+.statusSigning {
+  background: rgba(234, 179, 8, 0.15);
+  color: #eab308;
+}
+
+.statusSettling {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.statusCompleted {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.statusTerminated {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.roomTitle {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.roomIP {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 16px;
+}
+
+.roomMeta {
+  display: flex;
+  gap: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--glass-border);
+}
+
+.roomMetaItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.metaLabel {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.metaValue {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Room Detail */
+.roomDetailContainer {
+  padding-top: 120px;
+  padding-bottom: 100px;
+}
+
+.roomHeader {
+  margin-bottom: 32px;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 16px;
+}
+
+.breadcrumb a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.roomDetailTitle {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.headerBadges {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.headerActions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Detail Tabs */
+.detailTabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--glass-border);
+  margin-bottom: 28px;
+}
+
+.detailTab {
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--muted);
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+  background: transparent;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.detailTab:hover {
+  color: var(--foreground);
+}
+
+.detailTabActive {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.tabBadge {
+  font-size: 10px;
+  background: var(--primary-glow);
+  color: var(--accent);
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-weight: 700;
+}
+
+/* Content Panels */
+.detailLayout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 28px;
+  align-items: flex-start;
+}
+
+.panel {
+  padding: 24px;
+  border-radius: 16px;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  margin-bottom: 20px;
+}
+
+.panelTitle {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Participants */
+.participantList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.participant {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.participantInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.participantName {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.participantRole {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Offer Timeline */
+.offerTimeline {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.offerCard {
+  padding: 20px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  position: relative;
+}
+
+.offerCardActive {
+  border-color: var(--accent);
+  background: rgba(99, 102, 241, 0.05);
+}
+
+.offerVersion {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.offerPrice {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.offerMessage {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.offerFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.offerActions {
+  display: flex;
+  gap: 6px;
+}
+
+/* Document List */
+.docList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.docItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  transition: background 0.15s;
+}
+
+.docItem:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.docIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--primary-glow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.docInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.docName {
+  font-weight: 500;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.docMeta {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.signBadge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.signDraft {
+  background: rgba(148, 163, 184, 0.15);
+  color: #94a3b8;
+}
+
+.signShared {
+  background: rgba(99, 102, 241, 0.15);
+  color: #818cf8;
+}
+
+.signRequested {
+  background: rgba(234, 179, 8, 0.15);
+  color: #eab308;
+}
+
+.signSigned {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+/* Status Stepper */
+.stepper {
+  display: flex;
+  gap: 0;
+  margin-bottom: 20px;
+}
+
+.step {
+  flex: 1;
+  text-align: center;
+  position: relative;
+  padding: 0 4px;
+}
+
+.stepDot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  margin: 0 auto 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--muted);
+  position: relative;
+  z-index: 1;
+}
+
+.stepActive .stepDot {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white;
+}
+
+.stepCompleted .stepDot {
+  background: #10b981;
+  color: white;
+}
+
+.stepLabel {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.stepActive .stepLabel {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.stepCompleted .stepLabel {
+  color: #10b981;
+}
+
+.stepLine {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: var(--glass-border);
+  z-index: 0;
+}
+
+.stepCompleted .stepLine {
+  background: #10b981;
+}
+
+.step:last-child .stepLine {
+  display: none;
+}
+
+/* Offer Form */
+.offerForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.formLabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.formInput {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  color: var(--foreground);
+  font-size: 14px;
+}
+
+.formInput:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.formTextarea {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  color: var(--foreground);
+  font-size: 14px;
+  min-height: 80px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.formTextarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Action buttons */
+.actionBtn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--glass-border);
+  background: transparent;
+  color: var(--foreground);
+  transition: all 0.15s;
+}
+
+.actionBtn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.actionBtnPrimary {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  border: none;
+  color: white;
+}
+
+.actionBtnPrimary:hover {
+  box-shadow: 0 4px 12px var(--primary-glow);
+}
+
+.actionBtnDanger {
+  border-color: transparent;
+}
+
+.actionBtnDanger:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+/* Sidebar detail */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: sticky;
+  top: 100px;
+}
+
+/* Timeline Styles */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-left: 20px;
+}
+
+.timelineItem {
+  position: relative;
+  padding-left: 30px;
+  padding-bottom: 24px;
+  border-left: 2px solid var(--glass-border);
+}
+
+.timelineItem:last-child {
+  border-left-color: transparent;
+  padding-bottom: 0;
+}
+
+.timelineDot {
+  position: absolute;
+  left: -9px;
+  top: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--card);
+  border: 2px solid var(--accent);
+  z-index: 1;
+}
+
+.timelineContent {
+  background: rgba(255, 255, 255, 0.02);
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+}
+
+.timelineHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.timelineTitle {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.timelineDate {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.timelineDesc {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* Empty State */
+.emptyState {
+  text-align: center;
+  padding: 48px 20px;
+  color: var(--muted);
+}
+
+.emptyIcon {
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+
+.emptyTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: 6px;
+}
+
+.emptyDesc {
+  font-size: 14px;
+}
+
+/* Loading */
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--glass-border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin: 100px auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 900px) {
+  .detailLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: static;
+  }
+
+  .roomGrid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,366 @@
+.mandateContainer {
+  padding-top: 120px;
+  padding-bottom: 100px;
+}
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.pageTitle {
+  font-size: 36px;
+  font-weight: 700;
+}
+
+/* Tabs */
+.tabBar {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 28px;
+  border-bottom: 1px solid var(--glass-border);
+  padding-bottom: 4px;
+}
+
+.tab {
+  padding: 8px 20px;
+  border-radius: 8px 8px 0 0;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  transition: all 0.15s;
+}
+
+.tab:hover {
+  color: var(--foreground);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.tabActive {
+  color: var(--accent);
+  border-bottom: 2px solid var(--accent);
+}
+
+/* Mandate Table */
+.mandateTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.mandateTable th {
+  text-align: left;
+  padding: 10px 14px;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.mandateTable td {
+  padding: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  vertical-align: middle;
+}
+
+.mandateTable tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Status badges */
+.statusBadge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+.statusPending {
+  background: rgba(234, 179, 8, 0.15);
+  color: #eab308;
+}
+
+.statusActive {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.statusSuspended {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.statusTerminated {
+  background: rgba(107, 114, 128, 0.15);
+  color: #6b7280;
+}
+
+/* Scope Tags */
+.scopeTags {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.scopeTag {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.scopeEnabled {
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+}
+
+.scopeDisabled {
+  background: rgba(107, 114, 128, 0.08);
+  color: #4b5563;
+}
+
+/* Action buttons */
+.actionBtn {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--glass-border);
+  background: transparent;
+  color: var(--foreground);
+  transition: all 0.15s;
+  margin-right: 4px;
+}
+
+.actionBtn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.actionBtnPrimary {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  border: none;
+  color: white;
+}
+
+.actionBtnPrimary:hover {
+  box-shadow: 0 2px 8px var(--primary-glow);
+}
+
+.actionBtnDanger {
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+}
+
+.actionBtnDanger:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.actionBtnSuccess {
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #10b981;
+}
+
+.actionBtnSuccess:hover {
+  background: rgba(16, 185, 129, 0.1);
+}
+
+/* Create Form */
+.formPanel {
+  padding: 24px;
+  border-radius: 16px;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  margin-bottom: 20px;
+}
+
+.formTitle {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.formLabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.formInput {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  color: var(--foreground);
+  font-size: 14px;
+}
+
+.formInput:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.formSelect {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  color: var(--foreground);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.formTextarea {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  color: var(--foreground);
+  font-size: 14px;
+  min-height: 60px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+/* Scope Checklist */
+.scopeChecklist {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.scopeItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.scopeItem:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.scopeItem input[type="checkbox"] {
+  accent-color: var(--accent);
+  width: 16px;
+  height: 16px;
+}
+
+.scopeItemLabel {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* Signature section */
+.sigSection {
+  padding: 16px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  margin-top: 16px;
+}
+
+.sigTitle {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.signerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.signerName {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.signerStatus {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Empty/Spinner */
+.emptyState {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted);
+}
+
+.emptyIcon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.emptyTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: 6px;
+}
+
+.emptyDesc {
+  font-size: 14px;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--glass-border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin: 100px auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .formRow {
+    grid-template-columns: 1fr;
+  }
+
+  .scopeChecklist {
+    grid-template-columns: 1fr;
+  }
+
+  .mandateTable {
+    font-size: 12px;
+  }
+}

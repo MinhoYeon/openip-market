@@ -1,0 +1,69 @@
+{
+  "common": {
+    "search": "검색",
+    "searchPlaceholder": "기술, 키워드 또는 IP 유형 검색...",
+    "learnMore": "더 알아보기",
+    "postDemand": "수요 등록",
+    "login": "로그인",
+    "getStarted": "시작하기",
+    "loading": "로딩 중...",
+    "noResults": "결과가 없습니다.",
+    "all": "전체",
+    "notifications": "알림",
+    "markAllRead": "모두 읽음으로 표시",
+    "noNotifications": "알림이 없습니다."
+  },
+  "nav": {
+    "marketplace": "마켓플레이스",
+    "demand": "공고/수요",
+    "rooms": "거래/협상",
+    "experts": "전문가",
+    "documents": "문서함",
+    "mandates": "위임/권한"
+  },
+  "hero": {
+    "title": "글로벌 <0>지식재산(IP)</0> 거래소",
+    "subtitle": "전 세계 검증된 권리자들의 프리미엄 지식재산을 탐색하세요.",
+    "ctaPrimary": "IP 탐색하기",
+    "ctaSecondary": "수요 등록하기"
+  },
+  "categories": {
+    "title": "분야별 IP 탐색",
+    "patent": "특허",
+    "patentDesc": "혁신적인 기술 및 발명 특허",
+    "trademark": "상표",
+    "trademarkDesc": "글로벌 브랜딩 및 상표권",
+    "software": "소프트웨어",
+    "softwareDesc": "코드, 알고리즘 및 저작권",
+    "design": "디자인",
+    "designDesc": "산업 디자인 및 실용신안"
+  },
+  "featured": {
+    "trending": "인기 IP 매물",
+    "demands": "최신 수요 공고",
+    "new": "NEW",
+    "negotiable": "가격 협의"
+  },
+  "marketplace": {
+    "title": "글로벌 IP <0>허브</0>",
+    "subtitle": "전 세계 검증된 권리자들의 프리미엄 지식재산을 탐색하세요.",
+    "allIndustries": "모든 산업분야"
+  },
+  "demandCreate": {
+    "title": "수요 <0>등록</0>",
+    "subtitle": "찾으시는 기술 혹은 IP 조건을 등록해 주세요.",
+    "formTitle": "상세 내용 입력",
+    "ipType": "IP 유형",
+    "price": "예산/가격",
+    "submit": "공고 등록하기",
+    "submitting": "공고 등록 중..."
+  },
+  "footer": {
+    "description": "IP 거래의 신뢰와 전문성을 연결하는 글로벌 마켓플레이스",
+    "product": "제품",
+    "company": "회사",
+    "legal": "법규",
+    "privacy": "개인정보처리방침",
+    "terms": "이용약관"
+  }
+}
