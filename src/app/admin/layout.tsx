@@ -12,20 +12,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { label: 'Dashboard', href: '/admin', icon: '📊' },
     { label: 'Fee Policies', href: '/admin/fees', icon: '💰' },
     { label: 'Users', href: '/admin/users', icon: '👥' },
+    { label: 'Settlements', href: '/admin/settlements', icon: '💸' },
     { label: 'Platform Settings', href: '/admin/settings', icon: '⚙️' },
   ];
 
   return (
     <RoleGuard allowedRoles={['Admin']} pessimistic>
-      <div style={{ display: 'flex', minHeight: '100vh', background: '#0a0a0a' }}>
+      <div style={{ display: 'flex', minHeight: '100vh', background: '#f8f9fa' }}>
         {/* Sidebar */}
         <aside style={{
           width: '260px',
-          background: '#111',
-          borderRight: '1px solid #333',
+          background: '#ffffff',
+          borderRight: '1px solid #eaeaea',
           padding: '24px',
           display: 'flex',
-          flexDirection: 'column'
+          flexDirection: 'column',
+          boxShadow: '2px 0 5px rgba(0,0,0,0.03)'
         }}>
           <div style={{
             fontSize: '20px',
@@ -34,7 +36,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             color: 'var(--accent)',
             letterSpacing: '-0.5px'
           }}>
-            OPENIP <span style={{ color: '#fff' }}>ADMIN</span>
+            OPENIP <span style={{ color: '#000' }}>ADMIN</span>
           </div>
 
           <nav style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -51,9 +53,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     padding: '12px 16px',
                     borderRadius: '8px',
                     textDecoration: 'none',
-                    color: isActive ? '#fff' : '#888',
+                    color: isActive ? '#fff' : '#555',
                     background: isActive ? 'var(--primary)' : 'transparent',
-                    fontWeight: isActive ? 600 : 400,
+                    fontWeight: isActive ? 600 : 500,
                     transition: 'all 0.2s'
                   }}
                 >
@@ -64,8 +66,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             })}
           </nav>
 
-          <div style={{ marginTop: 'auto', paddingTop: '24px', borderTop: '1px solid #333' }}>
-            <Link href="/" style={{ color: '#666', textDecoration: 'none', fontSize: '14px' }}>
+          <div style={{ marginTop: 'auto', paddingTop: '24px', borderTop: '1px solid #eaeaea' }}>
+            <Link href="/" style={{ color: '#888', textDecoration: 'none', fontSize: '14px' }}>
               ← Return to Site
             </Link>
           </div>

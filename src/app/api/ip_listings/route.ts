@@ -75,6 +75,9 @@ export async function GET(request: Request) {
     const q = searchParams.get('q');
     const ipType = searchParams.get('ipType');
     const industry = searchParams.get('industry');
+    const minPrice = searchParams.get('minPrice');
+    const maxPrice = searchParams.get('maxPrice');
+    const sort = searchParams.get('sort') || 'newest';
 
     const where: any = {};
 
@@ -95,7 +98,7 @@ export async function GET(request: Request) {
       ];
     }
 
-    const listings = await prisma.iPListing.findMany({
+    let listings = await prisma.iPListing.findMany({
       where,
       include: {
         rightHolders: true,
@@ -107,9 +110,38 @@ export async function GET(request: Request) {
         }
       },
       orderBy: {
-        createdAt: 'desc'
+        createdAt: 'desc' // Default, will re-sort if needed
       }
     });
+
+    // In-memory Price Filtering & Sorting because priceExpectation is String
+    if (minPrice || maxPrice || sort) {
+      listings = listings.filter(item => {
+        if (!minPrice && !maxPrice) return true;
+        // Naive parsing: remove commas, "KRW", spaces
+        const priceStr = item.priceExpectation?.replace(/[^0-9]/g, '') || '0';
+        const price = parseInt(priceStr, 10);
+
+        if (minPrice && price < parseInt(minPrice)) return false;
+        if (maxPrice && price > parseInt(maxPrice)) return false;
+        return true;
+      });
+
+      if (sort === 'price_asc') {
+        listings.sort((a, b) => {
+          const pA = parseInt(a.priceExpectation?.replace(/[^0-9]/g, '') || '0', 10);
+          const pB = parseInt(b.priceExpectation?.replace(/[^0-9]/g, '') || '0', 10);
+          return pA - pB;
+        });
+      } else if (sort === 'price_desc') {
+        listings.sort((a, b) => {
+          const pA = parseInt(a.priceExpectation?.replace(/[^0-9]/g, '') || '0', 10);
+          const pB = parseInt(b.priceExpectation?.replace(/[^0-9]/g, '') || '0', 10);
+          return pB - pA;
+        });
+      }
+      // 'newest' is already handled by DB orderBy, but if we filtered, order receives stable sort
+    }
 
     return NextResponse.json(listings);
   } catch (error: any) {

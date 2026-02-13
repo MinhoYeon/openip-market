@@ -81,17 +81,19 @@ export async function PUT(
       }
     });
 
-    // If room completed/terminated, update IP listing status
-    if (status === 'Completed') {
-      await prisma.iPListing.update({
-        where: { id: room.ipListingId },
-        data: { status: 'Sold' }
-      });
-    } else if (status === 'Terminated') {
-      await prisma.iPListing.update({
-        where: { id: room.ipListingId },
-        data: { status: 'Published' }
-      });
+    // If room completed/terminated, update IP listing status (if linked)
+    if (room.ipListingId) {
+      if (status === 'Completed') {
+        await prisma.iPListing.update({
+          where: { id: room.ipListingId },
+          data: { status: 'Sold' }
+        });
+      } else if (status === 'Terminated') {
+        await prisma.iPListing.update({
+          where: { id: room.ipListingId },
+          data: { status: 'Published' }
+        });
+      }
     }
 
     return NextResponse.json(room);

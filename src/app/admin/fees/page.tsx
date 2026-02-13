@@ -66,41 +66,43 @@ export default function FeePoliciesPage() {
         </button>
       </div>
 
-      <div className="glass-card" style={{ padding: 0, overflow: 'hidden' }}>
+      <div className="fluent-card" style={{ padding: 0, overflow: 'hidden', background: 'white' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-          <thead style={{ background: 'rgba(255,255,255,0.05)', borderBottom: '1px solid var(--glass-border)' }}>
+          <thead style={{ background: '#f3f2f1', borderBottom: '1px solid #edebe9' }}>
             <tr>
-              <th style={{ padding: '16px' }}>Policy Name</th>
-              <th style={{ padding: '16px' }}>Fee Type</th>
-              <th style={{ padding: '16px' }}>Rate (%)</th>
-              <th style={{ padding: '16px' }}>Applicable To</th>
-              <th style={{ padding: '16px' }}>Status</th>
-              <th style={{ padding: '16px' }}>Actions</th>
+              <th style={{ padding: '16px', fontWeight: 600, color: '#201f1e' }}>Policy Name</th>
+              <th style={{ padding: '16px', fontWeight: 600, color: '#201f1e' }}>Fee Type</th>
+              <th style={{ padding: '16px', fontWeight: 600, color: '#201f1e' }}>Rate (%)</th>
+              <th style={{ padding: '16px', fontWeight: 600, color: '#201f1e' }}>Applicable To</th>
+              <th style={{ padding: '16px', fontWeight: 600, color: '#201f1e' }}>Status</th>
+              <th style={{ padding: '16px', fontWeight: 600, color: '#201f1e' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {policies.map(p => (
-              <tr key={p.id} style={{ borderBottom: '1px solid var(--glass-border)' }}>
-                <td style={{ padding: '16px', fontWeight: 600 }}>{p.name}</td>
+              <tr key={p.id} style={{ borderBottom: '1px solid #edebe9' }}>
+                <td style={{ padding: '16px', fontWeight: 600, color: '#201f1e' }}>{p.name}</td>
                 <td style={{ padding: '16px' }}>
                   <span style={{
-                    background: 'rgba(255,255,255,0.1)',
+                    background: '#f3f2f1',
                     padding: '4px 8px',
                     borderRadius: '4px',
-                    fontSize: '12px'
+                    fontSize: '12px',
+                    color: '#201f1e',
+                    border: '1px solid #edebe9'
                   }}>
                     {p.feeType}
                   </span>
                 </td>
-                <td style={{ padding: '16px' }}>{p.ratePercent ? `${p.ratePercent}%` : '-'}</td>
-                <td style={{ padding: '16px' }}>{p.applicableTo}</td>
+                <td style={{ padding: '16px', color: '#201f1e' }}>{p.ratePercent ? `${p.ratePercent}%` : '-'}</td>
+                <td style={{ padding: '16px', color: '#201f1e' }}>{p.applicableTo}</td>
                 <td style={{ padding: '16px' }}>
-                  <span style={{ color: p.isActive ? 'var(--success)' : 'var(--muted)' }}>
+                  <span style={{ color: p.isActive ? 'var(--success)' : 'var(--muted)', fontWeight: 600 }}>
                     {p.isActive ? 'Active' : 'Inactive'}
                   </span>
                 </td>
                 <td style={{ padding: '16px' }}>
-                  <button style={{ background: 'none', border: 'none', color: 'var(--muted)', cursor: 'pointer' }}>Edit</button>
+                  <button style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontWeight: 600 }}>Edit</button>
                 </td>
               </tr>
             ))}
@@ -116,29 +118,30 @@ export default function FeePoliciesPage() {
       {isModalOpen && (
         <div style={{
           position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          background: 'rgba(0,0,0,0.8)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 9999
+          background: 'rgba(0,0,0,0.4)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 9999
         }}>
-          <div className="glass-card" style={{ width: '400px', padding: '32px' }}>
-            <h2 style={{ marginBottom: '24px' }}>Create Fee Policy</h2>
+          <div className="fluent-card" style={{ width: '400px', padding: '32px', background: 'white', border: '1px solid #edebe9', boxShadow: '0 8px 24px rgba(0,0,0,0.12)' }}>
+            <h2 style={{ marginBottom: '24px', color: '#201f1e' }}>Create Fee Policy</h2>
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div>
-                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px' }}>Policy Name</label>
+                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 600, color: '#201f1e' }}>Policy Name</label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={e => setFormData({ ...formData, name: e.target.value })}
                   className="input-field"
+                  style={{ background: 'white', color: '#201f1e', borderColor: '#8a8886' }}
                   required
                 />
               </div>
 
               <div>
-                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px' }}>Fee Type</label>
+                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 600, color: '#201f1e' }}>Fee Type</label>
                 <select
                   value={formData.feeType}
                   onChange={e => setFormData({ ...formData, feeType: e.target.value })}
                   className="input-field"
-                  style={{ width: '100%', padding: '12px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--glass-border)', color: 'white', borderRadius: '8px' }}
+                  style={{ width: '100%', padding: '8px 12px', background: 'white', border: '1px solid #8a8886', color: '#201f1e', borderRadius: '0' }}
                 >
                   <option value="Platform">Platform Fee</option>
                   <option value="BrokerSeller">Broker Commission (Seller)</option>
@@ -149,23 +152,24 @@ export default function FeePoliciesPage() {
 
               <div style={{ display: 'flex', gap: '16px' }}>
                 <div style={{ flex: 1 }}>
-                  <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px' }}>Rate (%)</label>
+                  <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 600, color: '#201f1e' }}>Rate (%)</label>
                   <input
                     type="number"
                     step="0.1"
                     value={formData.ratePercent}
                     onChange={e => setFormData({ ...formData, ratePercent: e.target.value })}
                     className="input-field"
+                    style={{ background: 'white', color: '#201f1e', borderColor: '#8a8886' }}
                     required
                   />
                 </div>
                 <div style={{ flex: 1 }}>
-                  <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px' }}>Applicable To</label>
+                  <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 600, color: '#201f1e' }}>Applicable To</label>
                   <select
                     value={formData.applicableTo}
                     onChange={e => setFormData({ ...formData, applicableTo: e.target.value })}
                     className="input-field"
-                    style={{ width: '100%', padding: '12px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--glass-border)', color: 'white', borderRadius: '8px' }}
+                    style={{ width: '100%', padding: '8px 12px', background: 'white', border: '1px solid #8a8886', color: '#201f1e', borderRadius: '0' }}
                   >
                     <option value="All">All Transactions</option>
                     <option value="Deal">Deal (Sale)</option>
@@ -176,8 +180,8 @@ export default function FeePoliciesPage() {
               </div>
 
               <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
-                <button type="button" onClick={() => setIsModalOpen(false)} style={{ flex: 1, padding: '12px', background: 'transparent', border: '1px solid var(--glass-border)', color: 'white', borderRadius: '8px', cursor: 'pointer' }}>Cancel</button>
-                <button type="submit" className="btn-primary" style={{ flex: 1 }}>Create</button>
+                <button type="button" onClick={() => setIsModalOpen(false)} style={{ flex: 1, padding: '10px', background: 'white', border: '1px solid #8a8886', color: '#201f1e', borderRadius: '2px', cursor: 'pointer', fontWeight: 600 }}>Cancel</button>
+                <button type="submit" className="btn-primary" style={{ flex: 1, border: 'none' }}>Create</button>
               </div>
             </form>
           </div>

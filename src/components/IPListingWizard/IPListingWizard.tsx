@@ -203,7 +203,7 @@ const Step3Technology: React.FC<StepProps> = ({ data, updateData, onNext }) => {
   );
 };
 
-const Step4Closing: React.FC<StepProps> = ({ data, updateData, onNext }) => {
+const Step4Closing: React.FC<StepProps & { userId?: string }> = ({ data, updateData, onNext, userId }) => {
   return (
     <div className="glass-card" style={{ padding: '40px' }}>
       <h2 style={{ marginBottom: '8px' }}>Set Visibility & Intent</h2>
@@ -250,11 +250,15 @@ const Step4Closing: React.FC<StepProps> = ({ data, updateData, onNext }) => {
         <button
           className="btn-primary"
           onClick={async () => {
+            if (!userId) {
+              alert('You must be logged in to submit.');
+              return;
+            }
             try {
               const res = await fetch('/api/ip_listings', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
+                body: JSON.stringify({ ...data, owner_id: userId })
               });
               if (res.ok) {
                 alert('Proposal Submitted successfully to the real database!');
@@ -276,7 +280,10 @@ const Step4Closing: React.FC<StepProps> = ({ data, updateData, onNext }) => {
   );
 };
 
+import { useAuth } from '@/lib/auth/AuthContext';
+
 export default function IPListingWizard() {
+  const { user } = useAuth();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     right_holders: [{ name: '', share_percent: 100 }],
@@ -304,7 +311,7 @@ export default function IPListingWizard() {
       {step === 1 && <Step1BasicInfo data={formData} updateData={updateData} onNext={handleNavigate} />}
       {step === 2 && <Step2RightsHolders data={formData} updateData={updateData} onNext={handleNavigate} />}
       {step === 3 && <Step3Technology data={formData} updateData={updateData} onNext={handleNavigate} />}
-      {step === 4 && <Step4Closing data={formData} updateData={updateData} onNext={handleNavigate} />}
+      {step === 4 && <Step4Closing data={formData} updateData={updateData} onNext={handleNavigate} userId={user?.id} />}
     </div>
   );
 }

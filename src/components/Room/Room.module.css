@@ -624,7 +624,10 @@
 }
 
 .actionBtnPrimary:hover {
+  background: linear-gradient(135deg, var(--accent), var(--primary));
+  /* Reverse gradient or brighter */
   box-shadow: 0 4px 12px var(--primary-glow);
+  opacity: 0.9;
 }
 
 .actionBtnDanger {

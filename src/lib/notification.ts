@@ -2,7 +2,7 @@ import { prisma } from '@/lib/prisma';
 
 export async function createNotification(
   userId: string,
-  type: 'OFFER' | 'DOCUMENT' | 'SETTLEMENT' | 'SYSTEM',
+  type: 'OFFER' | 'DOCUMENT' | 'SETTLEMENT' | 'SYSTEM' | 'BID_RECEIVED' | 'NEW_MESSAGE',
   content: string,
   link?: string
 ) {

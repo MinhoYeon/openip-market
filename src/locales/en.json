@@ -1,69 +1,132 @@
 {
   "common": {
-    "search": "Search",
-    "searchPlaceholder": "Search technology, keywords, or IP types...",
-    "learnMore": "Learn more",
-    "postDemand": "Post Demand",
-    "login": "Login",
-    "getStarted": "Get Started",
     "loading": "Loading...",
-    "noResults": "No results found.",
-    "all": "All",
+    "error": "Error occurred",
+    "back": "Back",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "login": "Login",
     "notifications": "Notifications",
-    "markAllRead": "Mark all read",
-    "noNotifications": "No notifications"
+    "markAllRead": "Mark all as read",
+    "noNotifications": "No notifications",
+    "all": "All",
+    "searchPlaceholder": "Search for IP...",
+    "search": "Search",
+    "noResults": "No results found"
+  },
+  "hero": {
+    "title": "Discover and trade premium <0>Intellectual Property</0> worldwide",
+    "subtitle": "Unified platform for IP owners, buyers, and brokers to negotiate, contract, and settle IP transactions with transparency.",
+    "ctaPrimary": "Browse Marketplace",
+    "ctaSecondary": "List Your Demand"
+  },
+  "signature": {
+    "title": "Sign Document",
+    "signing_prefix": "You are signing:",
+    "type": "Type",
+    "draw": "Draw",
+    "clear": "Clear Signature",
+    "cancel": "Cancel",
+    "confirm": "Confirm Signature",
+    "signing": "Signing...",
+    "placeholder": "Type your name"
+  },
+  "room": {
+    "tabs": {
+      "overview": "Overview",
+      "negotiation": "Negotiation",
+      "documents": "Documents",
+      "messages": "Messages",
+      "settlement": "Settlement",
+      "audit": "Audit Log"
+    },
+    "labels": {
+      "ipListing": "IP Listing",
+      "roomSummary": "Room Summary",
+      "offerTimeline": "Offer Timeline",
+      "activity": "Activity Log",
+      "participants": "Participants",
+      "checklist": "Checklist",
+      "price": "Price",
+      "message": "Message",
+      "describeOffer": "Describe your offer...",
+      "noOffers": "No offers yet",
+      "startNegotiation": "Send an offer to start negotiating."
+    },
+    "actions": {
+      "proceed": "Proceed",
+      "terminate": "Terminate",
+      "cancel": "Cancel",
+      "newOffer": "New Offer",
+      "submitOffer": "Submit Offer",
+      "accept": "Accept",
+      "counter": "Counter",
+      "reject": "Reject"
+    }
+  },
+  "categories": {
+    "patent": "Patent",
+    "trademark": "Trademark",
+    "software": "Software",
+    "design": "Design"
   },
   "nav": {
     "marketplace": "Marketplace",
-    "demand": "Demand",
-    "rooms": "Deals",
-    "experts": "Experts",
-    "documents": "Documents",
+    "demand": "Demand Board",
+    "rooms": "Deal Rooms",
+    "experts": "Expert Services",
+    "documents": "My Documents",
     "mandates": "Mandates"
   },
-  "hero": {
-    "title": "Global Marketplace for <0>Intellectual Property</0>",
-    "subtitle": "Explore premium intellectual property from verified owners worldwide.",
-    "ctaPrimary": "Explore IP",
-    "ctaSecondary": "Post a Demand"
-  },
-  "categories": {
-    "title": "Explore by Category",
-    "patent": "Patent",
-    "patentDesc": "Innovative technical inventions",
-    "trademark": "Trademark",
-    "trademarkDesc": "Global brands and trademarks",
-    "software": "Software",
-    "softwareDesc": "Code, algorithms, and copyrights",
-    "design": "Design",
-    "designDesc": "Industrial designs and models"
-  },
-  "featured": {
-    "trending": "Trending IP Assets",
-    "demands": "Active Buyer Demands",
-    "new": "NEW",
-    "negotiable": "Negotiable"
-  },
   "marketplace": {
-    "title": "Global IP <0>Hub</0>",
-    "subtitle": "Explore premium intellectual property from verified owners worldwide.",
-    "allIndustries": "All Industries"
-  },
-  "demandCreate": {
-    "title": "Post a <0>Demand</0>",
-    "subtitle": "Tell the global IP market what you are looking for.",
-    "formTitle": "Demand Details",
-    "ipType": "IP Type",
-    "price": "Budget/Price",
-    "submit": "Post Demand",
-    "submitting": "Posting..."
-  },
-  "footer": {
-    "description": "The trusted marketplace for global intellectual property transactions.",
-    "product": "Product",
-    "company": "Company",
-    "legal": "Legal",
-    "privacy": "Privacy",
-    "terms": "Terms"
+    "title": "IP <0>Marketplace</0>",
+    "subtitle": "Discover and trade premium IP assets securely worldwide.",
+    "allIndustries": "All Industries",
+    "back_to_market": "Back to Marketplace",
+    "ip_not_found": "IP not found",
+    "tabs": {
+      "overview": "Overview",
+      "rights": "Rights Holders",
+      "licensing": "Licensing Terms"
+    },
+    "actions": {
+      "submit_offer": "Submit Offer",
+      "request_nda": "Request NDA",
+      "contact_owner": "Contact Owner"
+    },
+    "sections": {
+      "summary": "📋 Executive Summary",
+      "technical": "🔬 Technical Classification",
+      "timeline": "📅 Timeline",
+      "rights_holders": "👥 Rights Holders",
+      "licensing_terms": "📜 Licensing Terms"
+    },
+    "fields": {
+      "ip_type": "IP Type",
+      "industry": "Industry",
+      "ipc_code": "IPC/CPC Code",
+      "visibility": "Visibility",
+      "visible_full": "Public Display",
+      "visible_teaser": "Teaser Only (NDA Required)",
+      "listed_on": "Listed on Marketplace",
+      "last_updated": "Last Updated",
+      "price_expectation": "Price Expectation",
+      "listed_by": "Listed By",
+      "quick_facts": "Quick Facts",
+      "exclusive": "Exclusive License",
+      "non_exclusive": "Non-Exclusive License",
+      "territory": "Territory",
+      "royalty": "Royalty Model"
+    },
+    "messages": {
+      "no_summary": "No summary provided.",
+      "no_holders": "No rights holders listed.",
+      "negotiable": "Negotiable",
+      "price_note": "Final price is subject to negotiation",
+      "licensing_note": "Licensing terms are available after establishing a Deal Room. Submit an offer or request an NDA to begin the negotiation process.",
+      "available_on_request": "Available upon request",
+      "to_be_discussed": "To be discussed"
+    }
   }
 }

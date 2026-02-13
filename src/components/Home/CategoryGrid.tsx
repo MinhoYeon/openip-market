@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { useTranslation } from '@/components/I18nProvider';
+import { useTranslation } from '@/lib/i18n/i18n-context';
 
 export default function CategoryGrid() {
   const { t } = useTranslation();

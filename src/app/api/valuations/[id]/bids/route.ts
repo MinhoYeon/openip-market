@@ -30,6 +30,23 @@ export async function POST(
       }
     });
 
+    // Notify Requester
+    const valuationReq = await prisma.valuationRequest.findUnique({
+      where: { id: valuationRequestId },
+      select: { requesterId: true, ipListing: { select: { title: true } } }
+    });
+
+    if (valuationReq) {
+      await prisma.notification.create({
+        data: {
+          userId: valuationReq.requesterId,
+          type: 'BID_RECEIVED',
+          content: `New bid received for "${valuationReq.ipListing.title}": ${Number(fee).toLocaleString()} KRW`,
+          link: '/valuation/my-requests'
+        }
+      });
+    }
+
     return NextResponse.json(bid, { status: 201 });
   } catch (error: any) {
     console.error(`API ERROR [POST /api/valuations/${valuationRequestId}/bids]:`, error);

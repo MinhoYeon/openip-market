@@ -1,63 +1,33 @@
+
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+// GET /api/experts/[id] - Get public profile by userId
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await params;
+  const { id: userId } = await params;
 
   try {
-    const user = await prisma.user.findUnique({
-      where: { id },
-      include: {
+    const expert = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        name: true,
+        email: true, // Maybe hide email if privacy concerns?
         expertProfile: true,
-        listings: {
-          where: { visibility: { not: 'Private' } },
-          select: { id: true, title: true, summary: true, industry: true, ipType: true, priceExpectation: true }
-        },
-        mandatesAsBroker: {
-          where: { status: 'Active' },
-          include: {
-            ipListing: {
-              select: { id: true, title: true, summary: true, industry: true, ipType: true, priceExpectation: true }
-            }
-          }
-        }
+        createdAt: true,
       }
     });
 
-    if (!user) {
+    if (!expert || !expert.expertProfile) {
       return NextResponse.json({ error: 'Expert not found' }, { status: 404 });
     }
 
-    if (user.role !== 'Broker' && user.role !== 'Valuator' && user.role !== 'Admin') {
-      // Optionally restrict if user is regular owner?
-      // But owners can have public profiles too? No, mainly experts.
-      // For now, allow viewing anyone, but UI handles presentation.
-    }
-
-    // Combine listings
-    const ownedListings = user.listings;
-    const brokeredListings = user.mandatesAsBroker
-      .filter(m => m.ipListing)
-      .map(m => ({ ...m.ipListing, isBrokered: true }));
-
-    const allListings = [...ownedListings, ...brokeredListings];
-
-    return NextResponse.json({
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email, // public? maybe hide
-        role: user.role,
-        createdAt: user.createdAt
-      },
-      profile: user.expertProfile,
-      listings: allListings
-    });
-
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json(expert);
+  } catch (error) {
+    console.error(`Error fetching expert ${userId}:`, error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

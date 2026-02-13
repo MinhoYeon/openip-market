@@ -26,6 +26,7 @@ export async function POST(
     });
 
     if (!room) return NextResponse.json({ error: 'Room not found' }, { status: 404 });
+    if (!room.ipListing) return NextResponse.json({ error: 'IP Listing not found in room' }, { status: 400 });
 
     // 2. Identify Parties (Simplified: Buyer vs Seller/Broker)
     const buyer = room.participants.find(p => p.role === 'Buyer')?.user;
@@ -59,6 +60,29 @@ export async function POST(
 
 제3조 (비밀유지 의무)
 "을"은 제공받은 비밀정보를 제3자에게 누설하거나 본 계약 목적 이외의 용도로 사용해서는 안 된다.
+
+(이하 생략)
+      `;
+    } else if (templateType === 'License') {
+      title = `License Agreement - ${room.ipListing.title}`;
+      content = `
+# 기술이전(라이선스) 계약서
+
+**계약일:** ${effectiveDate}
+**대상 IP:** ${room.ipListing.title}
+
+**갑 (권리자):** ${seller.name} (${seller.email})
+**을 (실시권자):** ${buyer.name} (${buyer.email})
+
+제1조 (목적)
+본 계약은 "갑"이 보유한 지식재산권의 실시권을 "을"에게 허락하고, "을"은 이에 대한 대가를 지급함에 있어 필요한 제반 사항을 규정함에 있다.
+
+제2조 (실시권의 범위)
+1. "갑"은 "을"에게 대상 IP에 대한 [독점적/비독점적] 통상실시권을 허락한다.
+2. 실시 지역은 [전세계/대한민국]으로 한다.
+
+제3조 (기술료)
+"을"은 "갑"에게 합의된 기술료를 정해진 기한 내에 현금으로 지급한다.
 
 (이하 생략)
       `;

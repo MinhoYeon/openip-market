@@ -117,7 +117,7 @@ export default function RoomsPage() {
                     <span className={`${styles.roomStatus} ${getStatusClass(room.status)}`}>{room.status}</span>
                   </div>
                   <h3 className={styles.roomTitle}>{room.title}</h3>
-                  <p className={styles.roomIP}>📋 {room.ipListing.title}</p>
+                  <p className={styles.roomIP}>📋 {room.ipListing?.title || 'General Room'}</p>
                   <div className={styles.roomMeta}>
                     <div className={styles.roomMetaItem}>
                       <span className={styles.metaLabel}>Participants</span>

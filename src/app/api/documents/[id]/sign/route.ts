@@ -10,7 +10,7 @@ export async function POST(
 
   try {
     const body = await request.json();
-    const { signerId, action, rejectReason } = body;
+    const { signerId, action, rejectReason, signatureData } = body;
 
     if (!signerId || !action) {
       return NextResponse.json({ error: 'signerId and action are required' }, { status: 400 });
@@ -37,16 +37,19 @@ export async function POST(
     if (action === 'sign') {
       await prisma.signatureRequest.update({
         where: { id: sigReq.id },
-        data: { status: 'Signed', signedAt: new Date() }
+        data: { status: 'Signed', signedAt: new Date(), signatureData }
       });
 
       // Check if all signers have signed → update document to Signed
       const allRequests = await prisma.signatureRequest.findMany({
         where: { documentId }
       });
-      const allSigned = allRequests.every(r =>
-        r.id === sigReq.id ? true : r.status === 'Signed'
-      );
+      console.log(`[DEBUG] Document ${documentId}: Found ${allRequests.length} sig requests.`);
+      allRequests.forEach(r => console.log(` - Signer ${r.signerId}: ${r.status} (ID: ${r.id})`));
+
+      // Check strictly against DB state since we just updated current one
+      const allSigned = allRequests.every(r => r.status === 'Signed');
+      console.log(`[DEBUG] All Signed? ${allSigned}`);
 
       if (allSigned) {
         // 1. Update Document Status
@@ -100,6 +103,12 @@ export async function POST(
                 targetType: 'Settlement',
                 detail: feeJson
               }
+            });
+
+            // CRITICAL: Update Room Status to 'Settling'
+            await prisma.room.update({
+              where: { id: room.id },
+              data: { status: 'Settling' }
             });
           }
         }

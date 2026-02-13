@@ -44,11 +44,18 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const industry = searchParams.get('industry');
     const ipType = searchParams.get('ipType');
+    const requesterId = searchParams.get('requesterId');
 
-    const where: any = {
-      status: 'Open',
-      visibility: 'Public'
-    };
+    const where: any = {};
+
+    if (requesterId) {
+      // If filtering by requester, show all their demands
+      where.requesterId = requesterId;
+    } else {
+      // Public view: only Open and Public
+      where.status = 'Open';
+      where.visibility = 'Public';
+    }
 
     if (industry && industry !== 'All') where.industry = industry;
     if (ipType && ipType !== 'All') where.ipTypeNeeded = ipType;

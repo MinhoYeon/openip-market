@@ -4,18 +4,19 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/auth/AuthContext';
-import { useTranslation } from '@/components/I18nProvider';
+import { useTranslation } from '@/lib/i18n/i18n-context';
 import { RoleGuard } from '@/components/Auth/RoleGuard';
+import NotificationBell from '@/components/Notification/NotificationBell';
 
 export default function Navbar() {
   const pathname = usePathname();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [notifications, setNotifications] = useState<any[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [showDropdown, setShowDropdown] = useState(false);
 
   // Hide on Admin pages
-  if (pathname?.startsWith('/admin')) return null;
+
 
   useEffect(() => {
     if (user) {
@@ -51,7 +52,10 @@ export default function Navbar() {
     } catch (e) { console.error(e); }
   }
 
-  const { t } = useTranslation();
+  const { t, locale, setLocale } = useTranslation();
+
+  // Hide on Admin pages
+  if (pathname?.startsWith('/admin')) return null;
 
   return (
     <nav style={{
@@ -102,78 +106,112 @@ export default function Navbar() {
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        {/* Language Toggle */}
+        <div style={{ display: 'flex', gap: '4px', border: '1px solid #e1e1e1', borderRadius: '4px', padding: '2px' }}>
+          <button
+            onClick={() => setLocale('ko')}
+            style={{
+              padding: '4px 8px',
+              borderRadius: '2px',
+              border: 'none',
+              background: locale === 'ko' ? 'var(--primary)' : 'transparent',
+              color: locale === 'ko' ? 'white' : 'var(--muted)',
+              fontSize: '12px',
+              fontWeight: 600,
+              cursor: 'pointer'
+            }}
+          >
+            KO
+          </button>
+          <button
+            onClick={() => setLocale('en')}
+            style={{
+              padding: '4px 8px',
+              borderRadius: '2px',
+              border: 'none',
+              background: locale === 'en' ? 'var(--primary)' : 'transparent',
+              color: locale === 'en' ? 'white' : 'var(--muted)',
+              fontSize: '12px',
+              fontWeight: 600,
+              cursor: 'pointer'
+            }}
+          >
+            EN
+          </button>
+        </div>
+
         {user ? (
           <>
             <div style={{ position: 'relative' }}>
-              <button
-                className="btn-secondary"
-                style={{ fontSize: '20px', padding: '8px', position: 'relative' }}
-                onClick={() => setShowDropdown(!showDropdown)}
-              >
-                🔔
-                {unreadCount > 0 && (
-                  <span style={{
-                    position: 'absolute', top: '2px', right: '2px',
-                    background: 'var(--danger)', color: 'white',
-                    borderRadius: '50%', width: '16px', height: '16px',
-                    fontSize: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center'
-                  }}>
-                    {unreadCount}
-                  </span>
-                )}
-              </button>
-
-              {showDropdown && (
-                <div className="fluent-card" style={{
-                  position: 'absolute', top: '48px', right: 0, width: '320px',
-                  maxHeight: '400px', overflowY: 'auto', padding: '0',
-                  background: 'var(--card)',
-                  zIndex: 1001,
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-                }}>
-                  <div style={{ padding: '16px', borderBottom: '1px solid var(--card-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontWeight: 600 }}>{t('common.notifications') || 'Notifications'}</span>
-                    <button onClick={() => markRead()} className="ms-link" style={{ fontSize: '12px' }}>{t('common.markAllRead') || 'Mark all read'}</button>
-                  </div>
-                  {notifications.length === 0 ? (
-                    <div style={{ padding: '24px', textAlign: 'center', color: 'var(--muted)' }}>{t('common.noNotifications') || 'No notifications'}</div>
-                  ) : (
-                    notifications.map(n => (
-                      <div
-                        key={n.id}
-                        onClick={() => markRead([n.id])}
-                        style={{
-                          padding: '16px',
-                          borderBottom: '1px solid var(--card-border)',
-                          background: n.isRead ? 'transparent' : 'var(--surface)',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        <div style={{ fontSize: '11px', color: 'var(--muted)', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 600 }}>
-                          {n.type} • {new Date(n.createdAt).toLocaleDateString()}
-                        </div>
-                        <Link href={n.link || '#'} style={{ display: 'block', fontSize: '14px', color: 'var(--foreground)', textDecoration: 'none' }}>
-                          {n.content}
-                        </Link>
-                      </div>
-                    ))
-                  )}
-                </div>
-              )}
+              <NotificationBell />
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div style={{
-                width: '32px', height: '32px',
-                borderRadius: '50%',
-                background: 'var(--primary)',
-                color: 'white',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '14px', fontWeight: 600
-              }}>
-                {user.name?.[0] || 'U'}
+            <div style={{ position: 'relative' }}>
+              <div
+                style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
+                onClick={() => setShowDropdown(!showDropdown)}
+              >
+                <div style={{
+                  width: '32px', height: '32px',
+                  borderRadius: '50%',
+                  background: 'var(--primary)',
+                  color: 'white',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: '14px', fontWeight: 600
+                }}>
+                  {user.name?.[0] || 'U'}
+                </div>
+                <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--foreground)' }}>{user.name}</span>
               </div>
-              <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--foreground)' }}>{user.name}</span>
+
+              {/* User Dropdown */}
+              {showDropdown && (
+                <div className="fluent-card" style={{
+                  position: 'absolute', top: '48px', right: 0, width: '200px',
+                  background: 'var(--card)', zIndex: 1002, padding: '8px'
+                }}>
+                  <div style={{ padding: '8px', borderBottom: '1px solid var(--card-border)', marginBottom: '8px' }}>
+                    <div style={{ fontWeight: 600 }}>{user.name}</div>
+                    <div style={{ fontSize: '12px', color: 'var(--muted)' }}>{user.email}</div>
+                  </div>
+                  <Link
+                    href="/demand?filter=mine"
+                    onClick={() => setShowDropdown(false)}
+                    style={{
+                      display: 'block', padding: '8px', color: 'var(--foreground)',
+                      textDecoration: 'none', fontSize: '14px', fontWeight: 500
+                    }}
+                  >
+                    📂 My Requests
+                  </Link>
+                  <Link
+                    href="/valuation/my-requests"
+                    onClick={() => setShowDropdown(false)}
+                    style={{
+                      display: 'block', padding: '8px', color: 'var(--foreground)',
+                      textDecoration: 'none', fontSize: '14px', fontWeight: 500
+                    }}
+                  >
+                    ⚖️ My Valuations
+                  </Link>
+                  {user.role === 'Admin' && (
+                    <Link
+                      href="/admin"
+                      onClick={() => setShowDropdown(false)}
+                      style={{
+                        display: 'block', padding: '8px', color: 'var(--primary)',
+                        textDecoration: 'none', fontSize: '14px', fontWeight: 600
+                      }}
+                    >
+                      🛡️ Admin Dashboard
+                    </Link>
+                  )}
+                  <button onClick={() => { logout(); setShowDropdown(false); }}
+                    style={{ width: '100%', textAlign: 'left', padding: '8px', color: 'var(--danger)', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}>
+                    Sign Out
+                  </button>
+                </div>
+              )}
             </div>
           </>
         ) : (

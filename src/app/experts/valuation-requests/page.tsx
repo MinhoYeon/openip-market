@@ -3,7 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import styles from '@/components/Room/Room.module.css'; // Reusing some room styles for simplicity
 
+import { useAuth } from '@/lib/auth/AuthContext';
+import { useRouter } from 'next/navigation';
+
 export default function ExpertValuations() {
+  const { user, isLoading: authLoading } = useAuth();
+  const router = useRouter();
   const [requests, setRequests] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showBidForm, setShowBidForm] = useState<string | null>(null);
@@ -11,13 +16,19 @@ export default function ExpertValuations() {
   const [leadTime, setLeadTime] = useState('');
   const [message, setMessage] = useState('');
 
-  const expertId = 'expert_user_1'; // Demo expert ID
-
   useEffect(() => {
-    fetchRequests();
-  }, []);
+    if (authLoading) return;
+    if (!user || (user.role !== 'Expert' && user.role !== 'Valuator')) {
+      // Redirect or show empty
+      // router.push('/'); 
+      // For beta, just return/stop
+      setIsLoading(false);
+      return;
+    }
+    fetchRequests(user.id);
+  }, [user, authLoading]);
 
-  const fetchRequests = async () => {
+  const fetchRequests = async (expertId: string) => {
     try {
       const res = await fetch(`/api/valuations?expertId=${expertId}`);
       if (res.ok) setRequests(await res.json());
@@ -27,16 +38,17 @@ export default function ExpertValuations() {
   };
 
   const submitBid = async (requestId: string) => {
+    if (!user) return;
     try {
       const res = await fetch(`/api/valuations/${requestId}/bids`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ expertId, fee, leadTime, message })
+        body: JSON.stringify({ expertId: user.id, fee, leadTime, message })
       });
       if (res.ok) {
         alert("Bid submitted!");
         setShowBidForm(null);
-        fetchRequests();
+        fetchRequests(user.id);
       }
     } catch (e) {
       console.error(e);

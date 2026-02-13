@@ -30,15 +30,15 @@ export default function AdminDashboard() {
   }, []);
 
   const Card = ({ title, value, icon, sub }: { title: string, value: string | number, icon: string, sub?: string }) => (
-    <div className="glass-card" style={{ padding: '24px', display: 'flex', flexDirection: 'column' }}>
+    <div className="fluent-card" style={{ padding: '24px', display: 'flex', flexDirection: 'column', background: 'white', border: '1px solid #edebe9' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
-        <span style={{ fontSize: '14px', color: 'var(--muted)', fontWeight: 600 }}>{title.toUpperCase()}</span>
+        <span style={{ fontSize: '14px', color: '#605e5c', fontWeight: 600 }}>{title.toUpperCase()}</span>
         <span style={{ fontSize: '24px' }}>{icon}</span>
       </div>
-      <div style={{ fontSize: '32px', fontWeight: 800, marginBottom: '4px' }}>
+      <div style={{ fontSize: '32px', fontWeight: 800, marginBottom: '4px', color: '#201f1e' }}>
         {loading ? '-' : value}
       </div>
-      {sub && <div style={{ fontSize: '12px', color: 'var(--success)' }}>{sub}</div>}
+      {sub && <div style={{ fontSize: '12px', color: '#107c10' }}>{sub}</div>}
     </div>
   );
 
@@ -64,7 +64,7 @@ export default function AdminDashboard() {
         />
       </div>
 
-      <div className="glass-card" style={{ padding: '32px', textAlign: 'center', color: 'var(--muted)' }}>
+      <div className="fluent-card" style={{ padding: '32px', textAlign: 'center', color: '#605e5c', background: 'white', border: '1px solid #edebe9' }}>
         <h3>Activity Graph Placeholder</h3>
         <p>Chart.js or Recharts integration usually goes here.</p>
       </div>

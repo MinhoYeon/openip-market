@@ -3,6 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import styles from '@/components/Marketplace/IPDetail.module.css';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/lib/auth/AuthContext';
+import { useTranslation } from '@/lib/i18n/i18n-context';
 
 interface RightHolder {
   id: string;
@@ -37,7 +40,69 @@ export default function IPDetailPage({ params }: { params: Promise<{ id: string 
   const [listing, setListing] = useState<IPDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
+  const { t } = useTranslation();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState('overview');
+
+  const handleCreateRoom = async (type: string, initialTab: string = 'overview') => {
+    if (!user) {
+      alert('Login required');
+      router.push('/login');
+      return;
+    }
+    if (!listing) return;
+
+    // Check existing room
+    try {
+      const checkRes = await fetch(`/api/rooms?ipListingId=${listing.id}`);
+      if (checkRes.ok) {
+        const rooms = await checkRes.json();
+        // Simple client-side check if user is participant (API returns all for demo, or we assume filter works)
+        const myRoom = rooms.find((r: any) =>
+          r.participants.some((p: any) => p.user.id === user.id)
+        );
+
+        if (myRoom) {
+          router.push(`/rooms/${myRoom.id}?tab=${initialTab}`);
+          return;
+        }
+      }
+
+      // Create new room
+
+      // Self-dealing check: If I am the owner, create a simulation Buyer
+      const isSelfDealing = user.id === listing.ownerId;
+      const participants = isSelfDealing
+        ? [
+          { userId: 'test-buyer-sim-id', role: 'Buyer' }, // Simulated Buyer
+          { userId: listing.ownerId, role: 'Seller' }      // Me (Owner)
+        ]
+        : [
+          { userId: user.id, role: 'Buyer' },             // Me (Buyer)
+          { userId: listing.ownerId, role: 'Seller' }      // Owner
+        ];
+
+      const res = await fetch('/api/rooms', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: `Deal: ${listing.title}`,
+          type: 'Deal',
+          ipListingId: listing.id,
+          participants
+        })
+      });
+
+      if (res.ok) {
+        const newRoom = await res.json();
+        router.push(`/rooms/${newRoom.id}?tab=${initialTab}`);
+      }
+    } catch (err) {
+      console.error('Failed to create/join room:', err);
+      alert('Error initiating deal');
+    }
+  };
 
   useEffect(() => {
     async function fetchListing() {
@@ -65,7 +130,7 @@ export default function IPDetailPage({ params }: { params: Promise<{ id: string 
         <div className="container">
           <div className={styles.loadingContainer}>
             <div className={styles.spinner} />
-            <p>Loading IP details...</p>
+            <p>{t('common.loading')}</p>
           </div>
         </div>
       </main>
@@ -78,9 +143,9 @@ export default function IPDetailPage({ params }: { params: Promise<{ id: string 
         <div className="container">
           <div className={styles.loadingContainer}>
             <p style={{ fontSize: '48px' }}>🔍</p>
-            <h2>{error || 'IP not found'}</h2>
+            <h2>{error || 'IP를 찾을 수 없습니다.'}</h2>
             <Link href="/marketplace" className="btn-primary" style={{ padding: '12px 24px' }}>
-              Back to Marketplace
+              {t('marketplace.back_to_market')}
             </Link>
           </div>
         </div>
@@ -99,9 +164,9 @@ export default function IPDetailPage({ params }: { params: Promise<{ id: string 
   };
 
   const tabs = [
-    { id: 'overview', label: 'Overview' },
-    { id: 'rights', label: 'Rights Holders' },
-    { id: 'licensing', label: 'Licensing Terms' },
+    { id: 'overview', label: t('marketplace.tabs.overview') },
+    { id: 'rights', label: t('marketplace.tabs.rights') },
+    { id: 'licensing', label: t('marketplace.tabs.licensing') },
   ];
 
   return (
@@ -114,6 +179,7 @@ export default function IPDetailPage({ params }: { params: Promise<{ id: string 
           <span>{listing.ipType}</span>
           <span>›</span>
           <span style={{ color: 'var(--foreground)' }}>{listing.title}</span>
+
         </div>
 
         {/* Header */}
@@ -132,14 +198,23 @@ export default function IPDetailPage({ params }: { params: Promise<{ id: string 
           </div>
 
           <div className={styles.headerActions}>
-            <button className={`${styles.ctaButton} ${styles.ctaPrimary}`}>
-              Submit Offer
+            <button
+              className={`${styles.ctaButton} ${styles.ctaPrimary}`}
+              onClick={() => handleCreateRoom('Deal', 'negotiation')}
+            >
+              {t('marketplace.actions.submit_offer')}
             </button>
-            <button className={`${styles.ctaButton} ${styles.ctaSecondary}`}>
-              Request NDA
+            <button
+              className={`${styles.ctaButton} ${styles.ctaSecondary}`}
+              onClick={() => handleCreateRoom('Deal', 'documents')}
+            >
+              {t('marketplace.actions.request_nda')}
             </button>
-            <button className={`${styles.ctaButton} ${styles.ctaSecondary}`}>
-              Contact Owner
+            <button
+              className={`${styles.ctaButton} ${styles.ctaSecondary}`}
+              onClick={() => handleCreateRoom('Deal', 'messages')}
+            >
+              {t('marketplace.actions.contact_owner')}
             </button>
           </div>
         </div>
@@ -164,32 +239,32 @@ export default function IPDetailPage({ params }: { params: Promise<{ id: string 
               <>
                 {/* Summary */}
                 <div className={styles.section}>
-                  <h3 className={styles.sectionTitle}>📋 Executive Summary</h3>
+                  <h3 className={styles.sectionTitle}>{t('marketplace.sections.summary')}</h3>
                   <div className={styles.sectionBody}>
-                    {listing.summary || 'No summary provided.'}
+                    {listing.summary || t('marketplace.messages.no_summary')}
                   </div>
                 </div>
 
                 {/* Technical Info */}
                 <div className={styles.section}>
-                  <h3 className={styles.sectionTitle}>🔬 Technical Classification</h3>
+                  <h3 className={styles.sectionTitle}>{t('marketplace.sections.technical')}</h3>
                   <div className={styles.infoGrid}>
                     <div className={styles.infoItem}>
-                      <span className={styles.infoLabel}>IP Type</span>
+                      <span className={styles.infoLabel}>{t('marketplace.fields.ip_type')}</span>
                       <span className={styles.infoValue}>{listing.ipType}</span>
                     </div>
                     <div className={styles.infoItem}>
-                      <span className={styles.infoLabel}>Industry</span>
+                      <span className={styles.infoLabel}>{t('marketplace.fields.industry')}</span>
                       <span className={styles.infoValue}>{listing.industry || '—'}</span>
                     </div>
                     <div className={styles.infoItem}>
-                      <span className={styles.infoLabel}>IPC/CPC Code</span>
+                      <span className={styles.infoLabel}>{t('marketplace.fields.ipc_code')}</span>
                       <span className={styles.infoValue}>{listing.ipc || '—'}</span>
                     </div>
                     <div className={styles.infoItem}>
-                      <span className={styles.infoLabel}>Visibility</span>
+                      <span className={styles.infoLabel}>{t('marketplace.fields.visibility')}</span>
                       <span className={styles.infoValue}>
-                        {listing.visibility === 'Full' ? 'Public Display' : 'Teaser Only (NDA Required)'}
+                        {listing.visibility === 'Full' ? t('marketplace.fields.visible_full') : t('marketplace.fields.visible_teaser')}
                       </span>
                     </div>
                   </div>
@@ -197,19 +272,19 @@ export default function IPDetailPage({ params }: { params: Promise<{ id: string 
 
                 {/* Timeline */}
                 <div className={styles.section}>
-                  <h3 className={styles.sectionTitle}>📅 Timeline</h3>
+                  <h3 className={styles.sectionTitle}>📅 진행 이력 (Timeline)</h3>
                   <div className={styles.timeline}>
                     <div className={styles.timelineItem}>
                       <div className={styles.timelineDot} />
                       <div className={styles.timelineContent}>
-                        <span className={styles.timelineLabel}>Listed on Marketplace</span>
+                        <span className={styles.timelineLabel}>마켓플레이스 등록일</span>
                         <span className={styles.timelineDate}>{formatDate(listing.createdAt)}</span>
                       </div>
                     </div>
                     <div className={styles.timelineItem}>
                       <div className={styles.timelineDot} />
                       <div className={styles.timelineContent}>
-                        <span className={styles.timelineLabel}>Last Updated</span>
+                        <span className={styles.timelineLabel}>최종 업데이트</span>
                         <span className={styles.timelineDate}>{formatDate(listing.updatedAt)}</span>
                       </div>
                     </div>
@@ -220,14 +295,14 @@ export default function IPDetailPage({ params }: { params: Promise<{ id: string 
 
             {activeTab === 'rights' && (
               <div className={styles.section}>
-                <h3 className={styles.sectionTitle}>👥 Rights Holders ({listing.rightHolders.length})</h3>
+                <h3 className={styles.sectionTitle}>👥 권리자 현황 ({listing.rightHolders.length})</h3>
                 {listing.rightHolders.length > 0 ? (
                   <table className={styles.holdersTable}>
                     <thead>
                       <tr>
-                        <th>Name</th>
-                        <th>Share</th>
-                        <th style={{ width: '40%' }}>Ownership</th>
+                        <th>이름</th>
+                        <th>지분율</th>
+                        <th style={{ width: '40%' }}>소유권 현황</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -248,35 +323,34 @@ export default function IPDetailPage({ params }: { params: Promise<{ id: string 
                     </tbody>
                   </table>
                 ) : (
-                  <p style={{ color: 'var(--muted)' }}>No rights holders listed.</p>
+                  <p style={{ color: 'var(--muted)' }}>등록된 권리자가 없습니다.</p>
                 )}
               </div>
             )}
 
             {activeTab === 'licensing' && (
               <div className={styles.section}>
-                <h3 className={styles.sectionTitle}>📜 Licensing Terms</h3>
+                <h3 className={styles.sectionTitle}>{t('marketplace.sections.licensing_terms')}</h3>
                 <div className={styles.sectionBody}>
                   <p style={{ marginBottom: '20px' }}>
-                    Licensing terms are available after establishing a Deal Room.
-                    Submit an offer or request an NDA to begin the negotiation process.
+                    {t('marketplace.messages.licensing_note')}
                   </p>
                   <div className={styles.infoGrid}>
                     <div className={styles.infoItem}>
-                      <span className={styles.infoLabel}>Exclusive License</span>
-                      <span className={styles.infoValue}>Available upon request</span>
+                      <span className={styles.infoLabel}>{t('marketplace.fields.exclusive')}</span>
+                      <span className={styles.infoValue}>{t('marketplace.messages.available_on_request')}</span>
                     </div>
                     <div className={styles.infoItem}>
-                      <span className={styles.infoLabel}>Non-Exclusive License</span>
-                      <span className={styles.infoValue}>Available upon request</span>
+                      <span className={styles.infoLabel}>{t('marketplace.fields.non_exclusive')}</span>
+                      <span className={styles.infoValue}>{t('marketplace.messages.available_on_request')}</span>
                     </div>
                     <div className={styles.infoItem}>
-                      <span className={styles.infoLabel}>Territory</span>
-                      <span className={styles.infoValue}>Negotiable</span>
+                      <span className={styles.infoLabel}>{t('marketplace.fields.territory')}</span>
+                      <span className={styles.infoValue}>{t('marketplace.messages.available_on_request')}</span>
                     </div>
                     <div className={styles.infoItem}>
-                      <span className={styles.infoLabel}>Royalty Model</span>
-                      <span className={styles.infoValue}>To be discussed</span>
+                      <span className={styles.infoLabel}>{t('marketplace.fields.royalty')}</span>
+                      <span className={styles.infoValue}>{t('marketplace.messages.to_be_discussed')}</span>
                     </div>
                   </div>
                 </div>
@@ -288,18 +362,18 @@ export default function IPDetailPage({ params }: { params: Promise<{ id: string 
           <aside className={styles.sidebar}>
             {/* Price Card */}
             <div className={styles.sidebarCard}>
-              <div className={styles.sidebarCardTitle}>Price Expectation</div>
+              <div className={styles.sidebarCardTitle}>{t('marketplace.fields.price_expectation')}</div>
               <div className={styles.priceDisplay}>
-                {listing.priceExpectation || 'Negotiable'}
+                {listing.priceExpectation || t('marketplace.messages.negotiable')}
               </div>
               <div className={styles.priceNote}>
-                Final price is subject to negotiation
+                {t('marketplace.messages.price_note')}
               </div>
             </div>
 
             {/* Owner Card */}
             <div className={styles.sidebarCard}>
-              <div className={styles.sidebarCardTitle}>Listed By</div>
+              <div className={styles.sidebarCardTitle}>{t('marketplace.fields.listed_by')}</div>
               <div className={styles.ownerInfo}>
                 <div className={styles.ownerAvatar}>
                   {listing.owner.name?.charAt(0) || '?'}
@@ -313,18 +387,18 @@ export default function IPDetailPage({ params }: { params: Promise<{ id: string 
 
             {/* Quick Facts */}
             <div className={styles.sidebarCard}>
-              <div className={styles.sidebarCardTitle}>Quick Facts</div>
+              <div className={styles.sidebarCardTitle}>{t('marketplace.fields.quick_facts')}</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--muted)', fontSize: '14px' }}>Rights Holders</span>
+                  <span style={{ color: 'var(--muted)', fontSize: '14px' }}>{t('marketplace.sections.rights_holders')}</span>
                   <span style={{ fontWeight: 600 }}>{listing.rightHolders.length}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--muted)', fontSize: '14px' }}>IP Type</span>
+                  <span style={{ color: 'var(--muted)', fontSize: '14px' }}>{t('marketplace.fields.ip_type')}</span>
                   <span style={{ fontWeight: 600 }}>{listing.ipType}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--muted)', fontSize: '14px' }}>Listed</span>
+                  <span style={{ color: 'var(--muted)', fontSize: '14px' }}>{t('marketplace.fields.listed_on')}</span>
                   <span style={{ fontWeight: 600 }}>{formatDate(listing.createdAt)}</span>
                 </div>
               </div>

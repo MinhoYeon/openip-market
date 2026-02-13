@@ -66,6 +66,26 @@ export async function POST(
       }
     });
 
+    // Notify other participants
+    const room = await prisma.room.findUnique({
+      where: { id: roomId },
+      include: { participants: true }
+    });
+
+    if (room) {
+      const { createNotification } = await import('@/lib/notification');
+      for (const p of room.participants) {
+        if (p.userId !== senderId) {
+          await createNotification(
+            p.userId,
+            'NEW_MESSAGE',
+            `New message from ${message.sender.name}`,
+            `/rooms/${roomId}?tab=chat`
+          );
+        }
+      }
+    }
+
     return NextResponse.json(message, { status: 201 });
   } catch (error: any) {
     console.error(`API ERROR [POST /api/rooms/${roomId}/messages]:`, error);

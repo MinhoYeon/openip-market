@@ -25,7 +25,10 @@ interface DemandDetail {
   }[];
 }
 
+import { useAuth } from '@/lib/auth/AuthContext';
+
 export default function DemandDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { user } = useAuth();
   const [demand, setDemand] = useState<DemandDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -51,25 +54,25 @@ export default function DemandDetailPage({ params }: { params: Promise<{ id: str
       }
     }
     async function fetchUserListings() {
-      // Demo: fetch for test_owner_5
+      if (!user) return;
       try {
-        const res = await fetch(`/api/ip-listings?ownerId=test_owner_5`);
+        const res = await fetch(`/api/ip_listings?ownerId=${user.id}`);
         if (res.ok) setUserListings(await res.json());
       } catch (e) { console.error(e); }
     }
     fetchDemand();
     fetchUserListings();
-  }, [params]);
+  }, [params, user]);
 
   const handleSubmitProposal = async () => {
-    if (!demand || !pTitle) return;
+    if (!demand || !pTitle || !user) return;
     setIsSubmitting(true);
     try {
       const res = await fetch(`/api/demands/${demand.id}/proposals`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          proposerId: 'test_owner_5', // demo user
+          proposerId: user.id,
           title: pTitle,
           description: pDesc,
           proposedPrice: pPrice,

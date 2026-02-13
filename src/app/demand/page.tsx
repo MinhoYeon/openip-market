@@ -20,18 +20,35 @@ interface DemandSummary {
 
 const IP_TYPES = ['All', 'Patent', 'Trademark', 'Design', 'Software'];
 
+import { useAuth } from '@/lib/auth/AuthContext';
+
 export default function DemandPage() {
+  const { user } = useAuth();
   const [demands, setDemands] = useState<DemandSummary[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filterType, setFilterType] = useState('All');
   const [filterUrgency, setFilterUrgency] = useState('');
+  const [isMyDemands, setIsMyDemands] = useState(false);
+
+  useEffect(() => {
+    // Check for URL param ?filter=mine
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('filter') === 'mine') {
+      setIsMyDemands(true);
+    }
+  }, []);
 
   useEffect(() => {
     async function fetchDemands() {
       try {
         const params = new URLSearchParams();
-        if (filterType !== 'All') params.set('ipType', filterType);
-        if (filterUrgency) params.set('urgency', filterUrgency);
+        if (isMyDemands && user) {
+          params.set('requesterId', user.id);
+        } else {
+          if (filterType !== 'All') params.set('ipType', filterType);
+          if (filterUrgency) params.set('urgency', filterUrgency);
+        }
+
         const res = await fetch(`/api/demand?${params}`);
         if (res.ok) setDemands(await res.json());
       } catch (err) {
@@ -41,7 +58,7 @@ export default function DemandPage() {
       }
     }
     fetchDemands();
-  }, [filterType, filterUrgency]);
+  }, [filterType, filterUrgency, isMyDemands, user]);
 
   const getUrgencyClass = (u: string) =>
     u === 'Urgent' ? styles.urgencyUrgent : u === 'Flexible' ? styles.urgencyFlexible : styles.urgencyNormal;
@@ -67,15 +84,29 @@ export default function DemandPage() {
 
         {/* Filters */}
         <div className={styles.filterBar}>
-          <select className={styles.filterSelect} value={filterType} onChange={e => setFilterType(e.target.value)}>
-            {IP_TYPES.map(t => <option key={t} value={t}>{t === 'All' ? 'All Types' : t}</option>)}
-          </select>
-          <select className={styles.filterSelect} value={filterUrgency} onChange={e => setFilterUrgency(e.target.value)}>
-            <option value="">All Urgency</option>
-            <option value="Urgent">Urgent</option>
-            <option value="Normal">Normal</option>
-            <option value="Flexible">Flexible</option>
-          </select>
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            <select className={styles.filterSelect} value={filterType} onChange={e => setFilterType(e.target.value)} disabled={isMyDemands}>
+              {IP_TYPES.map(t => <option key={t} value={t}>{t === 'All' ? 'All Types' : t}</option>)}
+            </select>
+            <select className={styles.filterSelect} value={filterUrgency} onChange={e => setFilterUrgency(e.target.value)} disabled={isMyDemands}>
+              <option value="">All Urgency</option>
+              <option value="Urgent">Urgent</option>
+              <option value="Normal">Normal</option>
+              <option value="Flexible">Flexible</option>
+            </select>
+          </div>
+
+          {user && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <button
+                className={isMyDemands ? 'btn-primary' : 'btn-secondary'}
+                style={{ padding: '8px 16px', borderRadius: '20px', fontSize: '14px' }}
+                onClick={() => setIsMyDemands(!isMyDemands)}
+              >
+                {isMyDemands ? '👤 My Demands (Active)' : '👤 View My Demands'}
+              </button>
+            </div>
+          )}
         </div>
 
         {isLoading ? (

@@ -7,10 +7,12 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type'); // Deal, License, Valuation
     const status = searchParams.get('status');
+    const ipListingId = searchParams.get('ipListingId');
 
     const where: any = {};
     if (type) where.type = type;
     if (status) where.status = status;
+    if (ipListingId) where.ipListingId = ipListingId;
 
     const rooms = await prisma.room.findMany({
       where,
@@ -48,6 +50,26 @@ export async function POST(request: Request) {
         { error: 'title, type, and ipListingId are required' },
         { status: 400 }
       );
+    }
+
+    // Ensure participants exist (Demo/Beta logic)
+    if (participants && participants.length > 0) {
+      for (const p of participants) {
+        const userId = p.userId;
+        const exists = await prisma.user.findUnique({ where: { id: userId } });
+        if (!exists) {
+          // Create dummy user for FK constraint
+          await prisma.user.create({
+            data: {
+              id: userId,
+              // Use ID-based email to avoid P2002 unique constraint error if 'seller@test.com' exists with different ID
+              email: `${userId}@placeholder.openip`,
+              name: p.role === 'Seller' ? 'Test Seller' : 'Test Buyer',
+              role: p.role
+            }
+          });
+        }
+      }
     }
 
     // Create room with participants

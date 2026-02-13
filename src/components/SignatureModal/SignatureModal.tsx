@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from '@/lib/i18n/i18n-context';
 
 interface SignatureModalProps {
   isOpen: boolean;
@@ -8,17 +9,79 @@ interface SignatureModalProps {
 }
 
 export default function SignatureModal({ isOpen, onClose, onSign, documentTitle }: SignatureModalProps) {
+  const { t } = useTranslation();
   const [signatureType, setSignatureType] = useState('type');
   const [typedName, setTypedName] = useState('');
   const [isSigning, setIsSigning] = useState(false);
 
+  // Canvas Refs & State
+  const canvasRef = React.useRef<HTMLCanvasElement>(null);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [hasDrawn, setHasDrawn] = useState(false);
+
   if (!isOpen) return null;
+
+  // Drawing Handlers
+  const startDrawing = (e: React.MouseEvent | React.TouchEvent) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    setIsDrawing(true);
+    setHasDrawn(true);
+
+    const rect = canvas.getBoundingClientRect();
+    const x = ('touches' in e) ? e.touches[0].clientX - rect.left : (e as React.MouseEvent).clientX - rect.left;
+    const y = ('touches' in e) ? e.touches[0].clientY - rect.top : (e as React.MouseEvent).clientY - rect.top;
+
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+  };
+
+  const draw = (e: React.MouseEvent | React.TouchEvent) => {
+    if (!isDrawing) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const x = ('touches' in e) ? e.touches[0].clientX - rect.left : (e as React.MouseEvent).clientX - rect.left;
+    const y = ('touches' in e) ? e.touches[0].clientY - rect.top : (e as React.MouseEvent).clientY - rect.top;
+
+    ctx.lineTo(x, y);
+    ctx.stroke();
+  };
+
+  const stopDrawing = () => {
+    setIsDrawing(false);
+  };
+
+  const clearCanvas = () => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      ctx?.clearRect(0, 0, canvas.width, canvas.height);
+      setHasDrawn(false);
+    }
+  };
 
   const handleSign = async () => {
     if (signatureType === 'type' && !typedName.trim()) return;
+    if (signatureType === 'draw' && !hasDrawn) return;
 
     setIsSigning(true);
-    await onSign(signatureType === 'type' ? typedName : 'Draw_Signature_Mock_Data');
+
+    let signatureData = '';
+    if (signatureType === 'type') {
+      signatureData = `Type:${typedName}`;
+    } else {
+      // Export canvas as image
+      signatureData = canvasRef.current?.toDataURL() || 'Empty_Canvas';
+    }
+
+    await onSign(signatureData);
     setIsSigning(false);
     onClose();
   };
@@ -35,10 +98,10 @@ export default function SignatureModal({ isOpen, onClose, onSign, documentTitle 
         boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
       }}>
         <h3 style={{ margin: '0 0 16px 0', fontSize: '18px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          ✍️ Sign Document
+          ✍️ {t('signature.title')}
         </h3>
         <p style={{ color: 'var(--muted)', fontSize: '14px', marginBottom: '20px' }}>
-          You are signing: <strong style={{ color: 'var(--foreground)' }}>{documentTitle}</strong>
+          {t('signature.signing_prefix')} <strong style={{ color: 'var(--foreground)' }}>{documentTitle}</strong>
         </p>
 
         <div style={{ display: 'flex', gap: '10px', marginBottom: '16px' }}>
@@ -49,7 +112,7 @@ export default function SignatureModal({ isOpen, onClose, onSign, documentTitle 
               background: signatureType === 'type' ? 'var(--accent)' : 'rgba(255,255,255,0.05)',
               color: '#000', cursor: 'pointer', fontWeight: 600
             }}
-          >Type</button>
+          >{t('signature.type')}</button>
           <button
             onClick={() => setSignatureType('draw')}
             style={{
@@ -57,18 +120,18 @@ export default function SignatureModal({ isOpen, onClose, onSign, documentTitle 
               background: signatureType === 'draw' ? 'var(--accent)' : 'rgba(255,255,255,0.05)',
               color: '#000', cursor: 'pointer', fontWeight: 600
             }}
-          >Draw</button>
+          >{t('signature.draw')}</button>
         </div>
 
         <div style={{
-          height: '150px', backgroundColor: '#fff', borderRadius: '8px',
+          height: '200px', backgroundColor: '#fff', borderRadius: '8px',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          marginBottom: '20px', position: 'relative'
+          marginBottom: '10px', position: 'relative', overflow: 'hidden'
         }}>
           {signatureType === 'type' ? (
             <input
               autoFocus
-              placeholder="Type your name"
+              placeholder={t('signature.placeholder')}
               value={typedName}
               onChange={(e) => setTypedName(e.target.value)}
               style={{
@@ -77,11 +140,31 @@ export default function SignatureModal({ isOpen, onClose, onSign, documentTitle 
               }}
             />
           ) : (
-            <span style={{ color: '#ccc', fontStyle: 'italic' }}>🖊️ [Mouse Drawing Area Placeholder]</span>
+            <canvas
+              ref={canvasRef}
+              width={450}
+              height={200}
+              onMouseDown={startDrawing}
+              onMouseMove={draw}
+              onMouseUp={stopDrawing}
+              onMouseLeave={stopDrawing}
+              onTouchStart={startDrawing}
+              onTouchMove={draw}
+              onTouchEnd={stopDrawing}
+              style={{ cursor: 'crosshair', touchAction: 'none' }}
+            />
           )}
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+        {signatureType === 'draw' && (
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px' }}>
+            <button onClick={clearCanvas} style={{ fontSize: '12px', background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', textDecoration: 'underline' }}>
+              {t('signature.clear')}
+            </button>
+          </div>
+        )}
+
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: signatureType === 'type' ? '20px' : '0' }}>
           <button
             onClick={onClose}
             style={{
@@ -89,18 +172,18 @@ export default function SignatureModal({ isOpen, onClose, onSign, documentTitle 
               backgroundColor: 'transparent', color: 'var(--muted)', cursor: 'pointer'
             }}
           >
-            Cancel
+            {t('signature.cancel')}
           </button>
           <button
             onClick={handleSign}
-            disabled={isSigning || (signatureType === 'type' && !typedName.trim())}
+            disabled={isSigning || (signatureType === 'type' ? !typedName.trim() : !hasDrawn)}
             style={{
               padding: '10px 24px', borderRadius: '8px', border: 'none',
               backgroundColor: 'var(--accent)', color: '#000', fontWeight: 600, cursor: 'pointer',
-              opacity: (signatureType === 'type' && !typedName.trim()) ? 0.5 : 1
+              opacity: (signatureType === 'type' ? !typedName.trim() : !hasDrawn) ? 0.5 : 1
             }}
           >
-            {isSigning ? 'Signing...' : 'Confirm Signature'}
+            {isSigning ? t('signature.signing') : t('signature.confirm')}
           </button>
         </div>
       </div>

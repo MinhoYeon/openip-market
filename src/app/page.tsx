@@ -5,7 +5,7 @@ import StatsTicker from '@/components/Home/StatsTicker';
 import CategoryGrid from '@/components/Home/CategoryGrid';
 import FeaturedSection from '@/components/Home/FeaturedSection';
 import Link from 'next/link';
-import { useTranslation } from '@/components/I18nProvider';
+import { useTranslation } from '@/lib/i18n/i18n-context';
 
 export default function Home() {
   const { t } = useTranslation();

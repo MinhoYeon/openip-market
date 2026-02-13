@@ -203,6 +203,21 @@ model License {
   settlements     Settlement[]
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
+  reports         RoyaltyReport[]
+}
+
+model RoyaltyReport {
+  id              String   @id @default(uuid())
+  license         License  @relation(fields: [licenseId], references: [id])
+  licenseId       String
+  period          String   // e.g. "2026-Q1", "2026-01"
+  grossRevenue    String   // e.g. "100,000,000 KRW"
+  royaltyAmount   String   // e.g. "5,000,000 KRW"
+  status          String   @default("Pending") // Pending, Paid, Verified
+  evidenceUrl     String?  // Link to PDF invoice/report
+  paidAt          DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 model Settlement {
@@ -324,6 +339,7 @@ model SignatureRequest {
   documentId      String
   signer          User      @relation(fields: [signerId], references: [id])
   signerId        String
+  signatureData   String?   // Base64 signature image or text
   status          String    @default("Pending") // Pending, Signed, Rejected, Expired
   signedAt        DateTime?
   rejectedAt      DateTime?
@@ -369,13 +385,11 @@ model Notification {
   id        String   @id @default(uuid())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
-  type      String   // OFFER, DOCUMENT, SETTLEMENT, SYSTEM
+  type      String   // BID_RECEIVED, OFFER_ACCEPTED, NEW_MESSAGE, SYSTEM
   content   String
   isRead    Boolean  @default(false)
   link      String?  // /rooms/123
   createdAt DateTime @default(now())
+
+  @@index([userId])
 }
-
-
-
-

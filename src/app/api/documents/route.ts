@@ -61,3 +61,35 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    const { roomId, uploaderId, fileName, fileData } = body;
+
+    if (!roomId || !uploaderId || !fileName) {
+      return NextResponse.json({ error: 'roomId, uploaderId, fileName are required' }, { status: 400 });
+    }
+
+    // Creating a new Document record for manual upload
+    const doc = await prisma.document.create({
+      data: {
+        roomId,
+        uploaderId,
+        fileName,
+        fileUrl: `mock://uploaded/${fileName.replace(/\s+/g, '_')}`,
+        documentType: 'Other', // General type
+        signatureStatus: 'Draft',
+        version: 1,
+        confidential: 'Private',
+        accessScope: '["Buyer", "Seller", "Broker"]'
+      }
+    });
+
+    // Optionally create Audit Log
+    return NextResponse.json(doc, { status: 201 });
+  } catch (error: any) {
+    console.error('API ERROR [POST /api/documents]:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
+}

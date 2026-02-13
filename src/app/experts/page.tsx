@@ -71,6 +71,9 @@ export default function ExpertsPage() {
           <h1 className={styles.pageTitle}>
             Expert <span className="gradient-text">Marketplace</span>
           </h1>
+          <Link href="/experts/profile/edit" className="btn-primary" style={{ textDecoration: 'none' }}>
+            Register / Edit Profile
+          </Link>
         </div>
 
         <div className={styles.filterBar}>
